@@ -1,29 +1,12 @@
-import * as util from "./util.js";
-
-let fs;
+import fs from "fs";
+import toml from "toml";
+import {globby} from "globby";
+import Replacer from "./replacer.js";
 
 export default class Bafr {
 	constructor (script, options = {}) {
-		this.script = script;
+		this.script = new Replacer(script);
 		this.options = options;
-
-		// This ensures that we can specify a single replacement without the array
-		// (all properties are just inherited from the parent)
-		this.script.replace ??= [{}];
-
-		for (let replacement of this.script.replace) {
-			Object.setPrototypeOf(replacement, this.script);
-
-			if (replacement.regexp) {
-				let flags = "gv" + (replacement.case_insensitive ? "i" : "");
-				replacement.regexp = new RegExp(replacement.from, flags);
-			}
-			else if (replacement.case_insensitive) {
-				replacement.regexp = new RegExp(util.escapeRegExp(replacement.pattern), "gi");
-			}
-
-			replacement.to ??= "";
-		}
 	}
 
 	/**
@@ -32,18 +15,7 @@ export default class Bafr {
 	 * @returns {boolean}
 	 */
 	text (content) {
-		for (let replacement of this.script.replace) {
-			let from = replacement.regexp ?? replacement.from;
-
-			let prevContent;
-			do {
-				prevContent = content;
-				content = content.replaceAll(from, replacement.to);
-			}
-			while (replacement.recursive && prevContent !== content && content);
-		}
-
-		return content;
+		return this.script.text(content);
 	}
 
 	/**
@@ -52,8 +24,6 @@ export default class Bafr {
 	 * @returns {Promise<boolean>}
 	 */
 	async file (path, outputPath) {
-		fs ??= await import("fs");
-
 		if (!outputPath) {
 			// Generate from input path
 			if (this.script.suffix) {
@@ -109,5 +79,47 @@ export default class Bafr {
 			changed,
 			intact,
 		};
+	}
+
+	async glob (glob = this.options.files ?? this.script.files) {
+		if (!glob) {
+			throw new Error(`No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
+		}
+
+		let paths = await globby(glob);
+
+		if (paths.length === 0) {
+			console.warn(`${ glob } matched no files. The current working directory (CWD) was: ${ process.cwd() }`);
+			process.exit();
+		}
+
+		if (this.options.verbose) {
+			console.info(`Found ${ paths.length } files: ${ paths.slice(0, 10).join(", ") + (paths.length > 10 ? "..." : "") }`);
+		}
+
+		let ret = this.files(paths);
+		ret.paths = paths;
+		return ret;
+	}
+
+	static fromPath (path, options) {
+		let script;
+		let format = options.format ?? path.endsWith(".json") ? "json" : "toml";
+
+		try {
+			script = fs.readFileSync(path, "utf-8");
+		}
+		catch (error) {
+			throw new Error(`Failed to read script file: ${ error.message }`);
+		}
+
+		try {
+			script = format === "json" ? JSON.parse(script) : toml.parse(script);
+		}
+		catch (e) {
+			throw new Error(`Failed to parse script file as ${format}. Original error was:`, e);
+		}
+
+		return new this(script, options);
 	}
 }

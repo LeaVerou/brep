@@ -116,14 +116,29 @@ bafr script.json
 
 ## JS API
 
+There are two classes: `Bafr` that has the most functionality but only works in Node,
+and `Replacer` with the core functionality that works in both Node and the browser.
+
+### `Replacer`
+
+```js
+import { Replacer } from "bafr/replacer";
+```
+
+Instance methods:
+- `replacer.text(content)`: Process a string.
+
+### `Bafr` (Node.js-only)
+
 ```js
 import Bafr from "bafr";
 ```
 
 Instance methods:
 - `bafr.text(content)`: Process a string.
-- `bafr.file(path [, outputPath])`: Process a file and write the results back (async, Node.js-only).
-- `bafr.files(paths)`: Process multiple files and write the results back (Node.js-only).
+- `bafr.file(path [, outputPath])`: Process a file and write the results back (async).
+- `bafr.files(paths)`: Process multiple files and write the results back
+- `bafr.glob(pattern)`: Process multiple files and write the results back
 
 ## Future plans
 

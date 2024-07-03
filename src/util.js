@@ -1,7 +1,3 @@
-export function escapeRegExp(str) {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 export function parseArgs (argv = process.argv, defaults = {}) {
 	argv = argv.slice(2);
 	let script = argv.shift();
@@ -23,8 +19,6 @@ export function parseArgs (argv = process.argv, defaults = {}) {
 			ret.files = arg;
 		}
 	}
-
-	ret.format ??= ret.script.endsWith(".json") ? "json" : "toml";
 
 	return Object.assign(ret, defaults);
 }

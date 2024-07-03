@@ -7,6 +7,10 @@
   "bin": {
     "bafr": "src/cli.js"
   },
+  "exports": {
+    ".": "./src/bafr.js",
+    "./replacer": "./src/replacer.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "release-it"
