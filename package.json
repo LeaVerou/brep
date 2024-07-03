@@ -1,6 +1,6 @@
 {
   "name": "bafr",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.1",
   "description": "Create scripts that transform files en masse with a simple declarative syntax based on a series of find & replace operations",
   "main": "src/bafr.js",
   "type": "module",
@@ -19,5 +19,8 @@
   "dependencies": {
     "globby": "^14.0.2",
     "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "release-it": "^17.4.1"
   }
 }
