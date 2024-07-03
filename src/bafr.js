@@ -7,6 +7,10 @@ export default class Bafr {
 		this.script = script;
 		this.options = options;
 
+		// This ensures that we can specify a single replacement without the array
+		// (all properties are just inherited from the parent)
+		this.script.replace ??= [{}];
+
 		for (let replacement of this.script.replace) {
 			Object.setPrototypeOf(replacement, this.script);
 
