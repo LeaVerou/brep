@@ -70,11 +70,12 @@ You can also specify any replacement settings as global settings to set defaults
 
 ## Syntax reference
 
-| Key | In | Type | Default | Description |
+| Key | Context | Type | Default | Description |
 | --- | -- | ---- | ------- | ----------- |
 | `files` | Global | A glob pattern to match files to process. |
-| `from` | `replace` | `string` | (Mandatory) | The string to search for. |
-| `to` | `replace` | `string` | `""` | The string to replace the `from` string with. |
+| `suffix` | Global | String | `""` | The suffix to append to the original filename when writing back. |
+| `from` | Replacement | String | (Mandatory) | The string to search for. |
+| `to` | Replacement | String | `""` | The string to replace the `from` string with. |
 | `regexp` | Replacement | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
 | `case_sensitive` | Replacement | Boolean | `false` | Whether the search should be case-sensitive. |
 | `recursive` | Replacement | Boolean | `false` | Whether the replacement should be done recursively. |
@@ -101,7 +102,7 @@ import Bafr from "bafr";
 
 Instance methods:
 - `bafr.text(content)`: Process a string.
-- `bafr.file(path)`: Process a file and write the results back (async, Node.js-only).
+- `bafr.file(path [, outputPath])`: Process a file and write the results back (async, Node.js-only).
 - `bafr.files(paths)`: Process multiple files and write the results back (Node.js-only).
 
 ## Future plans

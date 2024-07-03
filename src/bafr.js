@@ -51,8 +51,19 @@ export default class Bafr {
 	 * @param {string} path
 	 * @returns {Promise<boolean>}
 	 */
-	async file (path) {
+	async file (path, outputPath) {
 		fs ??= await import("fs");
+
+		if (!outputPath) {
+			// Generate from input path
+			if (this.script.suffix) {
+				outputPath = path.replace(/\.[^.]+$/, this.script.suffix + "$&");
+			}
+			else {
+				outputPath = path;
+			}
+		}
+
 		let originalContent = await fs.promises.readFile(path, "utf-8");
 		let content = this.text(originalContent);
 		let changed = content !== originalContent;
@@ -62,7 +73,7 @@ export default class Bafr {
 				console.info(`Would have written this to ${ path }:\n`, content);
 			}
 			else {
-				await fs.promises.writeFile(path + ".md", content, "utf-8");
+				await fs.promises.writeFile(outputPath, content, "utf-8");
 
 				if (this.options.verbose) {
 					console.info(`Written ${ path } successfully`);

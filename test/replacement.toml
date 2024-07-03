@@ -1,4 +1,5 @@
 files = "test/file.md"
+suffix = "-replaced"
 
 [[ replace ]]
 regexp = true
