@@ -14,7 +14,6 @@ You can hardcode the file paths in the text file or pass them as arguments to re
 Here is the most basic bafr script that simply strips away all `<br>` tags:
 
 ```toml
-[[ replace ]]
 from = "<br>"
 ```
 
@@ -24,7 +23,6 @@ In most cases you’d want to replace the instances found with something else.
 Here is how you can replace all `<br>` tags with a newline:
 
 ```toml
-[[ replace ]]
 from = "<br>"
 to = "\n"
 ```
@@ -34,7 +32,6 @@ to = "\n"
 This also works, and shows how you can do multiline strings:
 
 ```toml
-[[ replace ]]
 from = "<br>"
 to = """
 """
@@ -47,13 +44,30 @@ The real power of bafr comes from its ability to use regular expressions.
 For example, here is how you’d strip all `<blink>` tags:
 
 ```toml
-[[ replace ]]
 regexp = true
 from = "<blink>([\S\s]+?)</blink>"
 to = "$1" # $1 will match the content of the tag
 ```
 
 bafr uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
+
+#### Multiple find & replace operations
+
+So far our script has only been specifying a single find & replace operation.
+That’s not very powerful.
+The real power of Bafr is that a single script can specify multiple find & replace operations,
+executed in order, with each operating on the result of the previous one.
+To specify multiple find & replace operations, you simply add `[[ replace ]]` sections:
+
+```toml
+[[ replace ]]
+from = "<blink>"
+
+[[ replace ]]
+from = "</blink>"
+```
+
+In the rest of the docs we will refer to each of these `[[ replace ]]` sections as a “replacement”.
 
 #### Global settings
 
@@ -92,6 +106,12 @@ To override them:
 
 ```bash
 bafr script.toml src/*.md
+```
+
+You can also specify the Bafr script as JSON if you prefer:
+
+```bash
+bafr script.json
 ```
 
 ## JS API
