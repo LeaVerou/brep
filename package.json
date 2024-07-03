@@ -1,9 +1,12 @@
 {
-  "name": "find-replace-script",
-  "version": "0.0.1-alpha.1",
+  "name": "bafr",
+  "version": "0.0.1-alpha.2",
   "description": "Create scripts that transform files en masse with a simple declarative syntax based on a series of find & replace operations",
-  "main": "src/index.js",
+  "main": "src/bafr.js",
   "type": "module",
+  "bin": {
+    "bafr": "src/cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

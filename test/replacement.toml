@@ -1,4 +1,4 @@
-files = "../phd/papers/*.md"
+files = "test/file.md"
 
 [[ replace ]]
 regexp = true

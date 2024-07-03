@@ -1,16 +1,17 @@
-# name-TBD
+# BAtch Find & Replace
 
-Ever written some complex find & replace operations in your editor, and wished you could save it for future reference?
-This is what Name-TBD exactly does.
+Ever written some complex find & replace operations in a text editor, and wished you could save them somewhere and re-run them in the future,
+either on the same file or other files?
+This is what bafr (BAtch Find & Replace) exactly does.
 
-Write out all find & replace operations in a readable text file and run it through Name-TBD to apply them to your files.
+Write out all find & replace operations in a readable text file and run it through bafr to apply them to your files.
 You can hardcode the file paths in the text file or pass them as arguments to repurpose the same transformation to multiple files.
 
 ## Syntax
 
 #### Stripping away matches
 
-Here is the most basic Name-TBD script that simply strips away all `<br>` tags:
+Here is the most basic bafr script that simply strips away all `<br>` tags:
 
 ```toml
 [[ replace ]]
@@ -42,7 +43,7 @@ to = """
 #### Regular expressions
 
 Replacing fixed strings with other fixed strings is useful, but not very powerful.
-The real power of Name-TBD comes from its ability to use regular expressions.
+The real power of bafr comes from its ability to use regular expressions.
 For example, here is how you’d strip all `<blink>` tags:
 
 ```toml
@@ -52,7 +53,7 @@ from = "<blink>([\S\s]+?)</blink>"
 to = "$1" # $1 will match the content of the tag
 ```
 
-Name-TBD uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
+bafr uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
 
 #### Global settings
 
@@ -81,14 +82,25 @@ from = "<br>"
 To use the files specified in the script, simply run:
 
 ```bash
-nametbd script.toml
+bafr script.toml
 ```
 
 To override them:
 
 ```bash
-nametbd script.toml src/*.md
+bafr script.toml src/*.md
 ```
+
+## JS API
+
+```js
+import Bafr from "bafr";
+```
+
+Instance methods:
+- `bafr.text(content)`: Process a string.
+- `bafr.file(path)`: Process a file and write the results back (async, Node.js-only).
+- `bafr.files(paths)`: Process multiple files and write the results back (Node.js-only).
 
 ## Future plans
 
