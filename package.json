@@ -1,0 +1,20 @@
+{
+  "name": "find-replace-script",
+  "version": "0.0.1-alpha.1",
+  "description": "Create scripts that transform files en masse with a simple declarative syntax based on a series of find & replace operations",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "find",
+    "replace"
+  ],
+  "author": "Lea Verou",
+  "license": "MIT",
+  "dependencies": {
+    "globby": "^14.0.2",
+    "toml": "^3.0.0"
+  }
+}

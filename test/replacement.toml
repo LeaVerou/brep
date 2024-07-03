@@ -1,0 +1,7 @@
+files = "../phd/papers/*.md"
+
+[[ replace ]]
+regexp = true
+from = '\*\*<span style="color: slategray">(.+?)</span>\*\*'
+to = "$1"
+
