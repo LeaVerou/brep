@@ -8,6 +8,8 @@ export default class Bafr {
 		this.options = options;
 
 		for (let replacement of this.script.replace) {
+			Object.setPrototypeOf(replacement, this.script);
+
 			if (replacement.regexp) {
 				let flags = "gv" + (replacement.case_insensitive ? "i" : "");
 				replacement.regexp = new RegExp(replacement.from, flags);

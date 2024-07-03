@@ -66,6 +66,8 @@ files = "content/*.md"
 from = "<br>"
 ```
 
+You can also specify any replacement settings as global settings to set defaults.
+
 ## Syntax reference
 
 | Key | In | Type | Default | Description |
@@ -108,11 +110,6 @@ Instance methods:
 
 - A way to intersect globs, e.g. the script specifies `**/*.html` then the script user specifies `folder/**` and all HTML files in `folder` are processed.
 - A way to specify a different output file for each input file (or maybe a suffix?)
-
-### Syntax
-
-- All replacement settings available as global settings to set defaults
-- Do not require `[[ replace ]]` if there is only one replacement
 
 ### CLI
 
