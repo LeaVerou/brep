@@ -3,7 +3,7 @@ import Replacer from "../src/replacer.js";
 export default {
 	name: "Text replacement",
 	run (text, script) {
-		return new Replacer(script).text(text);
+		return new Replacer(script).transform(text);
 	},
 	tests: [
 		{
