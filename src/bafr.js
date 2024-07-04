@@ -15,7 +15,7 @@ export default class Bafr {
 	 * @returns {boolean}
 	 */
 	text (content) {
-		return this.script.text(content);
+		return this.script.to(content);
 	}
 
 	/**

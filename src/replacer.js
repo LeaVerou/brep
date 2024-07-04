@@ -27,7 +27,7 @@ export default class Replacer {
 	 * @param {string} content
 	 * @returns {boolean}
 	 */
-	text (content) {
+	to (content) {
 		for (let replacement of this.replace) {
 			let from = replacement.regexp ?? replacement.from;
 

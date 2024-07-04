@@ -146,7 +146,7 @@ import { Replacer } from "bafr/replacer";
 ```
 
 Instance methods:
-- `replacer.text(content)`: Process a string.
+- `replacer.to(content)`: Process a string and return the result.
 
 ### `Bafr` (Node.js-only)
 
@@ -155,7 +155,7 @@ import Bafr from "bafr";
 ```
 
 Instance methods:
-- `bafr.text(content)`: Process a string.
+- `bafr.text(content)`: Process a string (internally calls `replacer.to()`).
 - `bafr.file(path [, outputPath])`: Process a file and write the results back (async).
 - `bafr.files(paths)`: Process multiple files and write the results back
 - `bafr.glob(pattern)`: Process multiple files and write the results back
