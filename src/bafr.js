@@ -102,6 +102,10 @@ export default class Bafr {
 		return ret;
 	}
 
+	toJSON () {
+		return this.script;
+	}
+
 	static fromPath (path, options) {
 		let script;
 		let format = options.format ?? path.endsWith(".json") ? "json" : "toml";
