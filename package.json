@@ -12,7 +12,7 @@
     "./replacer": "./src/replacer.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node src/cli.js test/replacement.toml --dry-run --verbose",
     "release": "release-it"
   },
   "keywords": [
