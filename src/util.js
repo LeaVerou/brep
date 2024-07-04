@@ -12,7 +12,8 @@ export function parseArgs (argv = process.argv, defaults = {}) {
 		if (arg.startsWith("--")) {
 			// Flag
 			let [key, ...value] = arg.slice(2).split("=");
-			value = value.join("=");
+			value = value.join("="); // value may contain =, so we need to rejoin it
+			key = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 			ret[key] = value || true;
 		}
 		else if (!ret.files) {
