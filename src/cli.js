@@ -10,8 +10,10 @@ let args = util.parseArgs(process.argv, {
 
 let bafr = Bafr.fromPath(args.script, args);
 
-let {paths, done, changed, intact} = await bafr.glob();
+let {done, ...outcome} = await bafr.glob();
 
 await done;
 
-console.info(`Processed ${ paths.length } files. ${ changed.size } files were changed and ${ intact.size } files remained intact.`);
+let message = util.serializeOutcome(outcome);
+
+console.info(message);

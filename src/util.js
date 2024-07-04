@@ -23,3 +23,10 @@ export function parseArgs (argv = process.argv, defaults = {}) {
 
 	return ret;
 }
+
+export function serializeOutcome ({paths, changed, intact}) {
+	let one = paths.length === 1;
+	let files = `${ paths.length } file${ one ? "" : "s" }`;
+	let changedFiles = `${ intact.size === 0 ? (one ? "it" : " all of them ") : (changed.size || "none") }`
+	return `Processed ${ files } and changed ${ changedFiles }.`
+}
