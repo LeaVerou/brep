@@ -1,7 +1,6 @@
 export default class Replacer {
-	constructor (script, options = {}) {
+	constructor (script) {
 		Object.assign(this, script);
-		this.options = options;
 
 		// This ensures that we can specify a single replacement without the array
 		// (all properties are just inherited from the parent)
