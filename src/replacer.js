@@ -1,3 +1,5 @@
+export const regexp = Symbol("regexp");
+
 export default class Replacer {
 	constructor (script) {
 		Object.assign(this, script);
@@ -11,10 +13,10 @@ export default class Replacer {
 			let flags = "g" + (replacement.case_insensitive ? "i" : "");
 
 			if (replacement.regexp) {
-				replacement.regexp = new RegExp(replacement.from, flags + "v");
+				replacement[regexp] = new RegExp(replacement.from, flags + "v");
 			}
 			else if (replacement.case_insensitive) {
-				replacement.regexp = new RegExp(escapeRegExp(replacement.from), flags);
+				replacement[regexp] = new RegExp(escapeRegExp(replacement.from), flags);
 			}
 
 			replacement.to ??= "";
@@ -28,7 +30,7 @@ export default class Replacer {
 	 */
 	to (content) {
 		for (let replacement of this.replace) {
-			let from = replacement.regexp ?? replacement.from;
+			let from = replacement[regexp] ?? replacement.from;
 
 			let prevContent;
 			do {
