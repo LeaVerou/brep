@@ -2,10 +2,25 @@
 
 Ever written some complex find & replace operations in a text editor, and wished you could save them somewhere and re-run them in the future,
 either on the same file or other files?
-This is what bafr (BAtch Find & Replace) exactly does.
+This is exactly what bafr (**BA**tch **F**ind & **R**eplace) does.
 
-Write out all find & replace operations in a readable text file and run it through bafr to apply them to your files.
-You can hardcode the file paths in the text file or pass them as arguments to repurpose the same transformation to multiple files.
+You write a bafr script (see syntax below), and then you apply it from the command-line like:
+
+```bash
+bafr myscript.toml src/**/*.html
+```
+
+This will apply the script `myscript.toml` to all HTML files in the `src` folder and its subfolders.
+You don’t need to specify the file paths multiple times if they don’t change, you can include them in your script as defaults (and still override them if needed).
+
+## Installation
+
+You will need to have [Node.js](https://nodejs.org/) installed.
+Then, to install bafr, run:
+
+```bash
+npm install -g bafr
+```
 
 ## Syntax
 
@@ -114,6 +129,11 @@ You can also specify the Bafr script as JSON if you prefer:
 bafr script.json
 ```
 
+### Supported flags
+
+- `--verbose`
+- `--dry-run`: Just print out the output and don’t write anything
+
 ## JS API
 
 There are two classes: `Bafr` that has the most functionality but only works in Node,
@@ -145,13 +165,11 @@ Instance methods:
 ### I/O
 
 - A way to intersect globs, e.g. the script specifies `**/*.html` then the script user specifies `folder/**` and all HTML files in `folder` are processed.
-- A way to specify a different output file for each input file (or maybe a suffix?)
+- A way to change the extension of the output file
 
 ### CLI
 
 - Interactive mode
-- `--verbose` flag
-- `--dry-run` flag
 - `--help` flag
 - `--version` flag
 
