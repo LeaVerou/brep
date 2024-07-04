@@ -4,7 +4,7 @@ import Bafr from "./bafr.js";
 import * as util from "./util.js";
 
 let args = util.parseArgs(process.argv, {
-	verbose: true,
+	verbose: false,
 	dryRun: false,
 });
 
