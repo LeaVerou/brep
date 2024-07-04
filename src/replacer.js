@@ -13,7 +13,7 @@ export default class Replacer {
 			let flags = "g" + (replacement.case_insensitive ? "i" : "");
 
 			if (replacement.regexp) {
-				replacement[regexp] = new RegExp(replacement.from, flags + "v");
+				replacement[regexp] = new RegExp(replacement.from, flags + "mv");
 			}
 			else if (replacement.case_insensitive) {
 				replacement[regexp] = new RegExp(escapeRegExp(replacement.from), flags);
