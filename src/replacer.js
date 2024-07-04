@@ -9,13 +9,13 @@ export default class Replacer {
 
 		for (let replacement of this.replace) {
 			Object.setPrototypeOf(replacement, this);
+			let flags = "g" + (replacement.case_insensitive ? "i" : "");
 
 			if (replacement.regexp) {
-				let flags = "gv" + (replacement.case_insensitive ? "i" : "");
-				replacement.regexp = new RegExp(replacement.from, flags);
+				replacement.regexp = new RegExp(replacement.from, flags + "v");
 			}
 			else if (replacement.case_insensitive) {
-				replacement.regexp = new RegExp(escapeRegExp(replacement.pattern), "gi");
+				replacement.regexp = new RegExp(escapeRegExp(replacement.from), flags);
 			}
 
 			replacement.to ??= "";
@@ -44,5 +44,5 @@ export default class Replacer {
 }
 
 function escapeRegExp(str) {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	return str?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

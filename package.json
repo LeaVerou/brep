@@ -12,7 +12,7 @@
     "./replacer": "./src/replacer.js"
   },
   "scripts": {
-    "test": "node src/cli.js test/replacement.toml --dry-run --verbose",
+    "test": "npx htest test/index.js",
     "release": "release-it"
   },
   "keywords": [
@@ -26,6 +26,7 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
+    "htest": "^1.0.0",
     "release-it": "^17.4.1"
   }
 }
