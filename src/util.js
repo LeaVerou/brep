@@ -2,10 +2,10 @@ export function parseArgs (argv = process.argv, defaults = {}) {
 	argv = argv.slice(2);
 	let script = argv.shift();
 
-	let ret = {script};
+	let ret = Object.assign({script}, defaults); // no default for script so no risk of overwriting
 
 	if (!ret.script) {
-		throw new Error("Please provide a path to a *.toml file to use as the script");
+		throw new Error("Please provide a path to a script file as the first argument.");
 	}
 
 	for (let arg of argv) {
@@ -21,5 +21,5 @@ export function parseArgs (argv = process.argv, defaults = {}) {
 		}
 	}
 
-	return Object.assign(ret, defaults);
+	return ret;
 }
