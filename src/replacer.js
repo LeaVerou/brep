@@ -1,4 +1,4 @@
-export const regexp = Symbol("regexp");
+export const fromRegexp = Symbol("from regexp");
 
 export default class Replacer {
 	constructor (script) {
@@ -11,15 +11,22 @@ export default class Replacer {
 		for (let replacement of this.replace) {
 			Object.setPrototypeOf(replacement, this);
 			let flags = "g" + (replacement.case_insensitive ? "i" : "");
+			let regexp = replacement.regexp;
 
-			if (replacement.regexp) {
-				replacement[regexp] = new RegExp(replacement.from, flags + "mv");
+			if (!replacement.from) {
+				if (replacement.before || replacement.after) {
+					let assertion = replacement.before ? "?=" : "?<=";
+					replacement[fromRegexp] = RegExp(`(${assertion}${ regexp ? replacement.before : escapeRegExp(replacement.before) })`, flags);
+				}
+			}
+			else if (regexp) {
+				replacement[fromRegexp] = RegExp(replacement.from, flags + "mv");
 			}
 			else if (replacement.case_insensitive) {
-				replacement[regexp] = new RegExp(escapeRegExp(replacement.from), flags);
+				replacement[fromRegexp] = RegExp(escapeRegExp(replacement.from), flags);
 			}
 
-			replacement.to ??= "";
+			replacement.to ??= replacement.insert ?? "";
 		}
 	}
 
@@ -30,7 +37,7 @@ export default class Replacer {
 	 */
 	transform (content) {
 		for (let replacement of this.replace) {
-			let from = replacement[regexp] ?? replacement.from;
+			let from = replacement[fromRegexp] ?? replacement.from;
 
 			let prevContent;
 			do {

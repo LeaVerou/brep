@@ -127,6 +127,33 @@ replace:
 - { from: </blink>, to: "</span>" }
 ```
 
+#### Append/prepend
+
+You can always use `$&` to refer to the matched string.
+For example, to prepend every instance of "Foo" with "Bar":
+
+```toml
+from = "Foo"
+to = "Bar$&"
+```
+```yaml
+from: Foo
+to: Bar$&
+```
+
+However, since this is a little cryptic, bafr supports a nicer syntax for this:
+
+```toml
+before = "Foo"
+insert = "Bar"
+```
+```yaml
+before: Foo
+insert: Bar
+```
+
+`after` is also supported and works the same way.
+
 #### Global settings
 
 You can also set global settings for all replacements by including `key = value` pairs at the top level of the file.
