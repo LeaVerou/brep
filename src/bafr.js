@@ -1,7 +1,14 @@
 import fs from "fs";
 import toml from "toml";
+import yaml from "yaml";
 import {globby} from "globby";
 import Replacer from "./replacer.js";
+
+let parsers = {
+	toml,
+	yaml,
+	json: JSON,
+};
 
 export default class Bafr {
 	constructor (script, options = {}) {
@@ -108,7 +115,8 @@ export default class Bafr {
 
 	static fromPath (path, options) {
 		let script;
-		let format = options.format ?? path.endsWith(".json") ? "json" : "toml";
+		let format = options.format ?? path.match(/\.([^.]+)$/)[1];
+		let parser = parsers[format] ?? toml;
 
 		try {
 			script = fs.readFileSync(path, "utf-8");
@@ -118,7 +126,7 @@ export default class Bafr {
 		}
 
 		try {
-			script = format === "json" ? JSON.parse(script) : toml.parse(script);
+			script = parser.parse(script);
 		}
 		catch (e) {
 			throw new Error(`Failed to parse script file as ${format}. Original error was:`, e);

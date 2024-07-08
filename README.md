@@ -24,12 +24,22 @@ npm install -g bafr
 
 ## Syntax
 
+There are two main syntaxes, each more appropriate for different use cases:
+1. [TOML](https://toml.io/en/) when your strings are multiline or have weird characters and you want their boundaries to be very explicit
+2. [YAML](https://yaml.org/) when you want a more concise syntax for simple replacements
+3. [JSON](https://www.json.org/) is also supported, but it’s not recommended for writing by hand.
+
+The docs below will show both, and it’s up to you what you prefer.
+
 #### Stripping away matches
 
 Here is the most basic bafr script that simply strips away all `<br>` tags:
 
 ```toml
 from = "<br>"
+```
+```yaml
+from: <br>
 ```
 
 #### Replacing matches with a string
@@ -40,6 +50,10 @@ Here is how you can replace all `<br>` tags with a newline:
 ```toml
 from = "<br>"
 to = "\n"
+```
+```yaml
+from: <br>
+to: "\n"
 ```
 
 #### Multiline strings
@@ -52,6 +66,8 @@ to = """
 """
 ```
 
+I do not recommend using YAML for multiline strings.
+
 #### Regular expressions
 
 Replacing fixed strings with other fixed strings is useful, but not very powerful.
@@ -62,6 +78,11 @@ For example, here is how you’d strip all `<blink>` tags:
 regexp = true
 from = "<blink>([\S\s]+?)</blink>"
 to = "$1" # $1 will match the content of the tag
+```
+```yaml
+regexp: true
+from: <blink>([\S\s]+?)</blink>
+to: $1 # $1 will match the content of the tag
 ```
 
 bafr uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
@@ -81,8 +102,30 @@ from = "<blink>"
 [[ replace ]]
 from = "</blink>"
 ```
+```yaml
+replace:
+- from: <blink>
+- from: </blink>
+```
 
 In the rest of the docs we will refer to each of these `[[ replace ]]` sections as a “replacement”.
+
+Here is how we would specify multiple replacements with a `to` field:
+
+```toml
+[[ replace ]]
+from = "<blink>"
+to = '<span class="blink">'
+
+[[ replace ]]
+from = "</blink>"
+to = "</span>"
+```
+```yaml
+replace:
+- { from: <blink>, to: '<span class="blink">' }
+- { from: </blink>, to: "</span>" }
+```
 
 #### Global settings
 
@@ -93,6 +136,11 @@ files = "content/*.md"
 
 [[ replace ]]
 from = "<br>"
+```
+```yaml
+files: content/*.md
+replace:
+- from: <br>
 ```
 
 You can also specify any replacement settings as global settings to set defaults.
@@ -117,16 +165,12 @@ To use the files specified in the script, simply run:
 bafr script.toml
 ```
 
-To override them:
+Where `script.toml` is your bafr script (and could be a `.yaml` or `.json` file).
+
+To override the files specified in the script, specify them after the script file name, like so:
 
 ```bash
 bafr script.toml src/*.md
-```
-
-You can also specify the Bafr script as JSON if you prefer:
-
-```bash
-bafr script.json
 ```
 
 ### Supported flags

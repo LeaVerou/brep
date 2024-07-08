@@ -23,7 +23,8 @@
   "license": "MIT",
   "dependencies": {
     "globby": "^14.0.2",
-    "toml": "^3.0.0"
+    "toml": "^3.0.0",
+    "yaml": "^2.4.5"
   },
   "devDependencies": {
     "htest": "^1.0.0",
