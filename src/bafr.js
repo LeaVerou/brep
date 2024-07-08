@@ -69,20 +69,22 @@ export default class Bafr {
 	files (paths) {
 		let changed = new Set();
 		let intact = new Set();
+		let start = performance.now();
+		let pathsChanged = Promise.all(paths.map(path => this.file(path).then(fileChanged => {
+				if (fileChanged) {
+					changed.add(path);
+				}
+				else {
+					intact.add(path);
+				}
+
+				return fileChanged;
+			})));
 
 		return {
-			done: Promise.all(
-				paths.map(path => this.file(path).then(fileChanged => {
-					if (fileChanged) {
-						changed.add(path);
-					}
-					else {
-						intact.add(path);
-					}
-
-					return fileChanged;
-				}))
-			),
+			start,
+			pathsChanged,
+			timeTaken: pathsChanged.then(() => performance.now() - start),
 			changed,
 			intact,
 		};

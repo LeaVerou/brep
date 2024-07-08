@@ -10,9 +10,8 @@ let args = util.parseArgs(process.argv, {
 
 let bafr = Bafr.fromPath(args.script, args);
 
-let {done, ...outcome} = await bafr.glob();
-
-await done;
+let outcome = await bafr.glob();
+outcome.timeTaken = await outcome.timeTaken;
 
 let message = util.serializeOutcome(outcome);
 
