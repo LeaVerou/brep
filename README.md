@@ -158,10 +158,6 @@ replace:
 You can also specify any replacement settings (`from`, `to`, `regexp`, `case_insensitive` etc) as global settings
 to set defaults that are applied to all replacements that don’t override them.
 
-## Shortcuts
-
-To make bafr scripts readable and easy to write, bafr supports a few shortcuts for common cases.
-
 ### Refer to the matched string
 
 You can always use `$&` to refer to the matched string (even when not in regexp mode).
@@ -197,6 +193,23 @@ insert: Bar
 
 > [!NOTE]
 > `insert` is literally just a an alias of `to`, it just reads nicer in these cases.
+
+You can also combine these with `from` to add additional criteria.
+For example this script:
+
+```toml
+from = "bafr"
+after = "using"
+to = "awesome bafr"
+```
+
+Will convert "I am using bafr" to "I am using awesome bafr".
+
+## Shortcuts
+
+To make bafr scripts readable and easy to write, bafr supports a few shortcuts for common cases.
+
+
 
 ### Multiple simple replacements
 

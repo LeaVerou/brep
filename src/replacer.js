@@ -20,23 +20,27 @@ export default class Replacer {
 				Object.setPrototypeOf(replacement, this);
 			}
 
-			let flags = "g" + (replacement.case_insensitive ? "i" : "");
-			let regexp = replacement.regexp;
-
-			if (!replacement.from) {
-				if (replacement.before || replacement.after) {
-					let assertion = replacement.before ? "?=" : "?<=";
-					replacement[fromRegexp] = RegExp(`(${assertion}${ regexp ? replacement.before : escapeRegExp(replacement.before) })`, flags);
-				}
-			}
-			else if (regexp) {
-				replacement[fromRegexp] = RegExp(replacement.from, flags + "mv");
-			}
-			else if (replacement.case_insensitive) {
-				replacement[fromRegexp] = RegExp(escapeRegExp(replacement.from), flags);
-			}
-
 			replacement.to ??= replacement.insert ?? "";
+
+			let { from = "", before, after, regexp, case_insensitive } = replacement;
+
+
+			let createRegexp = regexp || before || after || case_insensitive;
+
+			if (!createRegexp) {
+				continue;
+			}
+
+			let flags = "gmv" + (case_insensitive ? "i" : "");
+
+			before = before ? `(?=${ regexp ? replacement.before : escapeRegExp(replacement.before) })` : "";
+			after = after ?   `(?<=${ regexp ? replacement.after : escapeRegExp(replacement.after) })` : "";
+
+			if (!regexp) {
+				from = escapeRegExp(from);
+			}
+
+			replacement[fromRegexp] = RegExp(`${ after }${ from }${ before }`, flags);
 		}
 	}
 
