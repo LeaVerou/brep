@@ -7,10 +7,10 @@ This is exactly what bafr (**BA**tch **F**ind & **R**eplace) does.
 You write a bafr script (see syntax below), and then you apply it from the command-line like:
 
 ```sh
-bafr myscript.toml src/**/*.html
+bafr myscript.bafr.toml src/**/*.html
 ```
 
-This will apply the script `myscript.toml` to all HTML files in the `src` folder and its subfolders.
+This will apply the script `myscript.bafr.toml` to all HTML files in the `src` folder and its subfolders.
 You don’t need to specify the file paths multiple times if they don’t change, you can include them in your script as defaults (and still override them if needed).
 
 ## Installation
@@ -205,38 +205,35 @@ to = "awesome bafr"
 
 Will convert "I am using bafr" to "I am using awesome bafr".
 
-## Shortcuts
+## Shortcuts for many simple replacements
 
-To make bafr scripts readable and easy to write, bafr supports a few shortcuts for common cases.
+There are many cases where you want to make many replacements, all with the same settings (specified before them) and just different `from`/`to` values.
+Bafr supports several shortcuts for this.
 
+### [from, to] replacements
 
-
-### Multiple simple replacements
-
-In many cases, all you want is to replace a given string with a different given string, all with the same settings (specified at the root).
-bafr supports a shortcut for this.
-
-This looks nicer with YAML:
+Instead of declarations, you can specify from/to pairs directly by enclosing them in brackets, separated by a comma.
+This can be combined with regular replacements, though far more easily in YAML:
 
 ```yaml
 replace:
-- [fig, Figure]
-- [tab, Table]
-- {from: sec, to: Section} # regular replacement
+- [foo, bar]
+- [baz, quux]
+- {from: yolo, to: hello} # regular replacement
 ```
 
-But can be done with TOML too, albeit with a more awkward syntax:
+In TOML, it cannot be combined with regular `[[ replace ]]` blocks, so **all** replacements need to be specified in a different way:
 
 ```toml
 replace = [
-	["fig", "Figure"],
-	["tab", "Table"],
+	["foo", "bar"],
+	["baz", "quux"],
 	# cannot be combined with [[ replace ]] blocks
-	{ from = "sec", to = "Section" },
+	{ from = "yolo", to = "hello", case_sensitive = true },
 ]
 ```
-> [!WARNING]
-> Note that in TOML, this cannot coexist with `[[ replace ]]` blocks as it will overwrite them.
+
+### Key-value replacements
 
 
 ## Syntax reference
@@ -257,7 +254,7 @@ replace = [
 ### Global settings
 
 | Key | Type | Default | Description |
-| --- | -- | ---- | ------- | ----------- |
+| --- | ---- | ------- | ----------- |
 | `files` | String or array of strings | - | A glob pattern to match files to process. |
 
 ## CLI
