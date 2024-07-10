@@ -179,6 +179,33 @@ insert: Bar
 > [!NOTE]
 > `insert` is literally just a an alias of `to`, it just reads nicer in these cases.
 
+### Multiple simple replacements
+
+In many cases, all you want is to replace a given string with a different given string, all with the same settings (specified at the root).
+bafr supports a shortcut for this.
+
+This looks nicer with YAML:
+
+```yaml
+replace:
+- [fig, Figure]
+- [tab, Table]
+- {from: sec, to: Section} # regular replacement
+```
+
+But can be done with TOML too, albeit with a more awkward syntax:
+
+```toml
+replace = [
+	["fig", "Figure"],
+	["tab", "Table"],
+	# cannot be combined with [[ replace ]] blocks
+	{ from = "sec", to = "Section" },
+]
+```
+> [!WARNING]
+> Note that in TOML, this cannot coexist with `[[ replace ]]` blocks as it will overwrite them.
+
 #### Global settings
 
 You can also set global settings for all replacements by including `key = value` pairs at the top level of the file.

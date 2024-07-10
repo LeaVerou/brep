@@ -8,8 +8,18 @@ export default class Replacer {
 		// (all properties are just inherited from the parent)
 		this.replace ??= [{}];
 
-		for (let replacement of this.replace) {
-			Object.setPrototypeOf(replacement, this);
+		for (let i = 0; i < this.replace.length; i++) {
+			let replacement = this.replace[i];
+
+			if (Array.isArray(replacement)) {
+				// Shorthand syntax
+				let [from, to] = replacement;
+				this.replace[i] = replacement = Object.assign(Object.create(this), {from, to});
+			}
+			else {
+				Object.setPrototypeOf(replacement, this);
+			}
+
 			let flags = "g" + (replacement.case_insensitive ? "i" : "");
 			let regexp = replacement.regexp;
 
