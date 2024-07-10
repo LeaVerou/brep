@@ -228,15 +228,24 @@ replace = [
 
 ## Syntax reference
 
-| Key | Context | Type | Default | Description |
+### Replacement settings
+
+| Key | Type | Default | Description |
+| --- | ---- | ------- | ----------- |
+| `suffix` | String | `""` | The suffix to append to the original filename when writing back. |
+| `from` | String | (Mandatory) | The string to search for. |
+| `to` | String | `""` | The string to replace the `from` string with. |
+| `before` | String | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
+| `after` | String | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
+| `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
+| `case_sensitive` | Boolean | `false` | Whether the search should be case-sensitive. |
+| `recursive` | Boolean | `false` | Whether the replacement should be run recursively on its own output until it stops changing the output. |
+
+### Global settings
+
+| Key | Type | Default | Description |
 | --- | -- | ---- | ------- | ----------- |
-| `files` | Global | A glob pattern to match files to process. |
-| `suffix` | Global | String | `""` | The suffix to append to the original filename when writing back. |
-| `from` | Replacement | String | (Mandatory) | The string to search for. |
-| `to` | Replacement | String | `""` | The string to replace the `from` string with. |
-| `regexp` | Replacement | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
-| `case_sensitive` | Replacement | Boolean | `false` | Whether the search should be case-sensitive. |
-| `recursive` | Replacement | Boolean | `false` | Whether the replacement should be done recursively. |
+| `files` | String or array of strings | - | A glob pattern to match files to process. |
 
 ## CLI
 

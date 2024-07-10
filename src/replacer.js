@@ -12,7 +12,7 @@ export default class Replacer {
 			let replacement = this.replace[i];
 
 			if (Array.isArray(replacement)) {
-				// Shorthand syntax
+				// Convert [from, to] shorthand syntax to object
 				let [from, to] = replacement;
 				this.replace[i] = replacement = Object.assign(Object.create(this), {from, to});
 			}
