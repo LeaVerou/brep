@@ -28,6 +28,20 @@ export function serializeOutcome ({paths, changed, intact, timeTaken}) {
 	let one = paths.length === 1;
 	let files = `${ paths.length } file${ one ? "" : "s" }`;
 	let changedFiles = `${ intact.size === 0 ? (one ? "it" : "all of them ") : (changed.size || "none") }`
-	let secondsTaken = (timeTaken / 1000).toPrecision(3);
-	return `Processed ${ files } and changed ${ changedFiles } in ${secondsTaken}s.`
+
+	return `Processed ${ files } and changed ${ changedFiles } in ${ formatTimeTaken(timeTaken) }.`
+}
+
+export function formatTimeTaken (ms) {
+	let n = ms, unit = "ms";
+	if (ms >= 1000) {
+		n /= 1000;
+		unit = "s";
+	}
+	if (n >= 60) {
+		n /= 60;
+		unit = "min";
+	}
+
+	return `${ n.toPrecision(3) } ${ unit }`;
 }
