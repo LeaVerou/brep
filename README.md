@@ -139,6 +139,25 @@ replace:
 - { from: </blink>, to: "</span>" }
 ```
 
+#### Global settings
+
+You can also set global settings for all replacements by including `key = value` pairs at the top level of the file.
+
+```toml
+files = "content/*.md"
+
+[[ replace ]]
+from = "<br>"
+```
+```yaml
+files: content/*.md
+replace:
+- from: <br>
+```
+
+You can also specify any replacement settings (`from`, `to`, `regexp`, `case_insensitive` etc) as global settings
+to set defaults that are applied to all replacements that don’t override them.
+
 ## Shortcuts
 
 To make bafr scripts readable and easy to write, bafr supports a few shortcuts for common cases.
@@ -206,23 +225,6 @@ replace = [
 > [!WARNING]
 > Note that in TOML, this cannot coexist with `[[ replace ]]` blocks as it will overwrite them.
 
-#### Global settings
-
-You can also set global settings for all replacements by including `key = value` pairs at the top level of the file.
-
-```toml
-files = "content/*.md"
-
-[[ replace ]]
-from = "<br>"
-```
-```yaml
-files: content/*.md
-replace:
-- from: <br>
-```
-
-You can also specify any replacement settings as global settings to set defaults.
 
 ## Syntax reference
 
