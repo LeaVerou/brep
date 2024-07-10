@@ -6,7 +6,7 @@ This is exactly what bafr (**BA**tch **F**ind & **R**eplace) does.
 
 You write a bafr script (see syntax below), and then you apply it from the command-line like:
 
-```bash
+```sh
 bafr myscript.toml src/**/*.html
 ```
 
@@ -18,22 +18,23 @@ You don’t need to specify the file paths multiple times if they don’t change
 You will need to have [Node.js](https://nodejs.org/) installed.
 Then, to install bafr, run:
 
-```bash
+```sh
 npm install -g bafr
 ```
 
 ## Syntax
 
-There are two main syntaxes, each more appropriate for different use cases:
+There are three main syntaxes, each more appropriate for different use cases:
 1. [TOML](https://toml.io/en/) when your strings are multiline or have weird characters and you want their boundaries to be very explicit
 2. [YAML](https://yaml.org/) when you want a more concise syntax for simple replacements
-3. [JSON](https://www.json.org/) is also supported, but it’s not recommended for writing by hand.
+3. [JSON](https://www.json.org/) is also supported. It’s not recommended for writing by hand but can be convenient as the output from other tools.
 
-The docs below will show both, and it’s up to you what you prefer.
+The docs below will show both TOML and YAML, and it’s up to you what you prefer.
 
 #### Stripping away matches
 
-Here is the most basic bafr script that simply strips away all `<br>` tags:
+Here is the most basic bafr script: just a single `from` declaration that strips away all matches.
+This bafr script strips away all `<br>` tags:
 
 ```toml
 from = "<br>"
@@ -41,6 +42,8 @@ from = "<br>"
 ```yaml
 from: <br>
 ```
+
+Note that the YAML syntax allows you to not quote strings in [many cases](https://stackoverflow.com/a/22235064/90826), which can be quite convenient.
 
 #### Replacing matches with a string
 
@@ -87,12 +90,16 @@ to: $1 # $1 will match the content of the tag
 
 bafr uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
 
-#### Multiple find & replace operations
+### Multiple find & replace operations
 
 So far our script has only been specifying a single find & replace operation.
 That’s not very powerful.
 The real power of Bafr is that a single script can specify multiple find & replace operations,
 executed in order, with each operating on the result of the previous one.
+We will refer to each of these as a _replacement_ in the rest of the docs.
+
+#### Multiple replacements in TOML
+
 To specify multiple find & replace operations, you simply add `[[ replace ]]` sections:
 
 ```toml
@@ -102,13 +109,6 @@ from = "<blink>"
 [[ replace ]]
 from = "</blink>"
 ```
-```yaml
-replace:
-- from: <blink>
-- from: </blink>
-```
-
-In the rest of the docs we will refer to each of these `[[ replace ]]` sections as a “replacement”.
 
 Here is how we would specify multiple replacements with a `to` field:
 
@@ -121,27 +121,49 @@ to = '<span class="blink">'
 from = "</blink>"
 to = "</span>"
 ```
+
+#### Multiple replacements in YAML
+
+If you only need a single key (to strip matches away) YAML provides a very compact syntax:
+
+```yaml
+replace:
+- from: <blink>
+- from: </blink>
+```
+
+To specify multiple declarations, you need to enclose them in `{ }`:
 ```yaml
 replace:
 - { from: <blink>, to: '<span class="blink">' }
 - { from: </blink>, to: "</span>" }
 ```
 
-#### Append/prepend
+## Shortcuts
 
-You can always use `$&` to refer to the matched string.
-For example, to prepend every instance of "Foo" with "Bar":
+To make bafr scripts readable and easy to write, bafr supports a few shortcuts for common cases.
+
+### Refer to the matched string
+
+You can always use `$&` to refer to the matched string (even when not in regexp mode).
+For example, to wrap every instance of "bafr" with an `<abbr>` tag you can do:
 
 ```toml
-from = "Foo"
-to = "Bar$&"
+from = "bafr"
+to = '<abbr title="BAtch Find & Replace">$&</abbr>'
 ```
 ```yaml
-from: Foo
-to: Bar$&
+from: bafr
+to: '<abbr title="BAtch Find & Replace">$&</abbr>'
 ```
 
-However, since this is a little cryptic, bafr supports a nicer syntax for this:
+### Append/prepend
+
+While `$&` can be convenient, it’s also a little cryptic.
+To make it easier to append or prepend matches with a string,
+bafr also supports `before`, `after`, and `insert` properties.
+
+For example, this will insert "Bar" before every instance of "Foo":
 
 ```toml
 before = "Foo"
@@ -152,7 +174,10 @@ before: Foo
 insert: Bar
 ```
 
-`after` is also supported and works the same way.
+`after` is also supported and works as you might expect.
+
+> [!NOTE]
+> `insert` is literally just a an alias of `to`, it just reads nicer in these cases.
 
 #### Global settings
 
@@ -188,7 +213,7 @@ You can also specify any replacement settings as global settings to set defaults
 
 To use the files specified in the script, simply run:
 
-```bash
+```sh
 bafr script.bafr.toml
 ```
 
@@ -196,8 +221,15 @@ Where `script.bafr.toml` is your bafr script (and could be a `.yaml` or `.json` 
 
 To override the files specified in the script, specify them after the script file name, like so:
 
-```bash
+```sh
 bafr script.bafr.toml src/*.md
+```
+
+The syntax (TOML, YAML, JSON) is inferred from the file extension.
+To override that (or to use an arbitrary file extension) you can use `--format`:
+
+```sh
+bafr script.bafr --format=toml
 ```
 
 > [!NOTE]
