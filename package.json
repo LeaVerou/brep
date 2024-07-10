@@ -15,6 +15,10 @@
     "test": "npx htest test/index.js",
     "release": "release-it"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leaverou/bafr.git"
+  },
   "keywords": [
     "find",
     "replace"
