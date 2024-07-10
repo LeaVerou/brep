@@ -189,16 +189,19 @@ You can also specify any replacement settings as global settings to set defaults
 To use the files specified in the script, simply run:
 
 ```bash
-bafr script.toml
+bafr script.bafr.toml
 ```
 
-Where `script.toml` is your bafr script (and could be a `.yaml` or `.json` file).
+Where `script.bafr.toml` is your bafr script (and could be a `.yaml` or `.json` file).
 
 To override the files specified in the script, specify them after the script file name, like so:
 
 ```bash
-bafr script.toml src/*.md
+bafr script.bafr.toml src/*.md
 ```
+
+> [!NOTE]
+> You can name your script however you want, however ending in `.bafr.ext` is recommended (where ext is `toml`, `yaml`, `json`, etc.) to make it clear that this is a bafr script.
 
 ### Supported flags
 
