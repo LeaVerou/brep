@@ -242,7 +242,6 @@ replace = [
 
 | Key | Type | Default | Description |
 | --- | ---- | ------- | ----------- |
-| `suffix` | String | `""` | The suffix to append to the original filename when writing back. |
 | `from` | String | (Mandatory) | The string to search for. |
 | `to` | String | `""` | The string to replace the `from` string with. |
 | `before` | String | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
@@ -257,6 +256,8 @@ replace = [
 | Key | Type | Default | Description |
 | --- | ---- | ------- | ----------- |
 | `files` | String or array of strings | - | A glob pattern to match files to process. |
+| `suffix` | String | `""` | Instead of overwriting the original file, append this suffix to its filename |
+| `extension` | String | - | Instead of overwriting the original file, change its extension to this value. Can start with a `.` but doesn’t need to. |
 
 ## CLI
 

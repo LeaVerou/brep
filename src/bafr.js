@@ -33,11 +33,13 @@ export default class Bafr {
 	async file (path, outputPath) {
 		if (!outputPath) {
 			// Generate from input path
+			outputPath = path;
+
 			if (this.script.suffix) {
-				outputPath = path.replace(/\.[^.]+$/, this.script.suffix + "$&");
+				outputPath = outputPath.replace(/(?=\.[^\/]+$)/, this.script.suffix);
 			}
-			else {
-				outputPath = path;
+			if (this.script.extension) {
+				outputPath = outputPath.replace(/(?=\.[^.]+)$/, this.script.extension.replace(/^\.?/, "."));
 			}
 		}
 
