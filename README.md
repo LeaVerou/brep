@@ -250,6 +250,7 @@ replace = [
 | `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
 | `case_sensitive` | Boolean | `false` | Whether the search should be case-sensitive. |
 | `recursive` | Boolean | `false` | Whether the replacement should be run recursively on its own output until it stops changing the output. |
+| `files` | String or array of strings | - | Partial paths to filter against. This is an additional filter over the files being processed, to apply specific replacements only to some of the files. |
 
 ### Global settings
 

@@ -49,8 +49,12 @@ export default class Replacer {
 	 * @param {string} content
 	 * @returns {boolean}
 	 */
-	transform (content) {
+	transform (content, options) {
 		for (let replacement of this.replace) {
+			if (options?.filter && !options.filter(replacement)) {
+				continue;
+			}
+
 			let from = replacement[fromRegexp] ?? replacement.from;
 
 			let prevContent;

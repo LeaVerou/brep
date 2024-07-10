@@ -21,8 +21,8 @@ export default class Bafr {
 	 * @param {string} content
 	 * @returns {boolean}
 	 */
-	text (content) {
-		return this.script.transform(content);
+	text (content, options) {
+		return this.script.transform(content, options);
 	}
 
 	/**
@@ -42,7 +42,17 @@ export default class Bafr {
 		}
 
 		let originalContent = await fs.promises.readFile(path, "utf-8");
-		let content = this.text(originalContent);
+		let content = this.text(originalContent, {
+			filter (replacement) {
+				if (replacement.files) {
+					// Test path against files criteria
+					replacement.files = Array.isArray(replacement.files) ? replacement.files : [replacement.files];
+					return Boolean(replacement.files.find(file => path.includes(file)));
+				}
+
+				return true;
+			}
+		});
 		let changed = content !== originalContent;
 
 		if (changed) {
