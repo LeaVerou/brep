@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import toml from "toml";
 import yaml from "yaml";
 import {globby} from "globby";
@@ -27,13 +28,13 @@ export default class Bafr {
 
 	/**
 	 * Apply the script to a file
-	 * @param {string} path
+	 * @param {string} filePath
 	 * @returns {Promise<boolean>}
 	 */
-	async file (path, outputPath) {
+	async file (filePath, outputPath) {
 		if (!outputPath) {
 			// Generate from input path
-			outputPath = path;
+			outputPath = filePath;
 
 			if (this.script.suffix) {
 				outputPath = outputPath.replace(/(?=\.[^\/]+$)/, this.script.suffix);
@@ -41,15 +42,18 @@ export default class Bafr {
 			if (this.script.extension) {
 				outputPath = outputPath.replace(/\.[^.]+$/, this.script.extension.replace(/^\.?/, "."));
 			}
+			if (this.script.path) {
+				outputPath = path.join(this.script.path, outputPath);
+			}
 		}
 
-		let originalContent = await fs.promises.readFile(path, "utf-8");
+		let originalContent = await fs.promises.readFile(filePath, "utf-8");
 		let content = this.text(originalContent, {
 			filter (replacement) {
 				if (replacement.files) {
 					// Test path against files criteria
 					replacement.files = Array.isArray(replacement.files) ? replacement.files : [replacement.files];
-					return Boolean(replacement.files.find(file => path.includes(file)));
+					return Boolean(replacement.files.find(file => filePath.includes(file)));
 				}
 
 				return true;
@@ -59,13 +63,13 @@ export default class Bafr {
 
 		if (changed) {
 			if (this.options.dryRun) {
-				console.info(`Would have written this to ${ path }:\n`, content);
+				console.info(`Would have written this to ${ filePath }:\n`, content);
 			}
 			else {
 				await fs.promises.writeFile(outputPath, content, "utf-8");
 
 				if (this.options.verbose) {
-					console.info(`Written ${ path } successfully`);
+					console.info(`Written ${ filePath } successfully`);
 				}
 			}
 		}
