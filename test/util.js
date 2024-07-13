@@ -2,7 +2,8 @@ import { resolvePath } from "../src/util.js";
 
 export default {
 	name: "Utility functions",
-	tests: [{
+	tests: [
+		{
 			name: "resolvePath()",
 			run (from, to) {
 				let path = resolvePath(from, to);
