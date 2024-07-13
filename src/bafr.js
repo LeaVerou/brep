@@ -43,7 +43,8 @@ export default class Bafr {
 				outputPath = outputPath.replace(/\.[^.]+$/, this.script.extension.replace(/^\.?/, "."));
 			}
 			if (this.script.path) {
-				outputPath = path.join(this.script.path, outputPath);
+				let outputPathParsed = path.parse(outputPath);
+				outputPath = path.resolve(outputPathParsed.dir, this.script.path, outputPathParsed.base);
 			}
 		}
 
