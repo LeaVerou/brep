@@ -16,6 +16,14 @@ export default class Bafr {
 	constructor (script, options = {}) {
 		this.script = new Replacer(script);
 		this.options = applyDefaults(options, this.constructor.defaultOptions);
+
+		for (let property of ["paths", "path", "suffix", "extension"]) {
+			this[property] = this.options[property] ?? this.script[property];
+		}
+
+		if (this.extension && !this.extension.startsWith(".")) {
+			this.extension = "." + this.extension;
+		}
 	}
 
 	/**
@@ -27,50 +35,59 @@ export default class Bafr {
 		return this.script.transform(content, options);
 	}
 
-	/**
-	 * Apply the script to a file
-	 * @param {string} filePath
-	 * @returns {Promise<boolean>}
-	 */
-	async file (filePath, outputPath) {
-		if (!outputPath) {
-			// Generate from input path
-			outputPath = filePath;
-
-			if (this.script.suffix) {
-				outputPath = outputPath.replace(/(?=\.[^\/]+$)/, this.script.suffix);
-			}
-			if (this.script.extension) {
-				outputPath = outputPath.replace(/\.[^.]+$/, this.script.extension.replace(/^\.?/, "."));
-			}
-			if (this.script.path) {
-				outputPath = resolvePath(outputPath, this.script.path);
-			}
+	getOutputPath (inputPath) {
+		if (this.paths?.[inputPath]) {
+			return this.paths[inputPath];
 		}
 
-		let originalContent = await fs.promises.readFile(filePath, "utf-8");
+		// Generate from input path
+		let outputPath = inputPath;
+
+		if (this.suffix) {
+			outputPath = outputPath.replace(/(?=\.[^\/]+$)/, this.suffix);
+		}
+
+		if (this.extension) {
+			outputPath = outputPath.replace(/\.[^.]+$/, this.extension);
+		}
+
+		if (this.path) {
+			outputPath = resolvePath(outputPath, this.path);
+		}
+
+		return outputPath;
+	}
+
+	/**
+	 * Apply the script to a file
+	 * @param {string} inputPath
+	 * @returns {Promise<boolean>}
+	 */
+	async file (inputPath, outputPath = this.getOutputPath(inputPath)) {
+		let originalContent = await fs.promises.readFile(inputPath, "utf-8");
 		let content = this.text(originalContent, {
 			filter (replacement) {
 				if (replacement.files) {
 					// Test path against files criteria
 					replacement.files = Array.isArray(replacement.files) ? replacement.files : [replacement.files];
-					return Boolean(replacement.files.find(file => filePath.includes(file)));
+					return Boolean(replacement.files.find(file => inputPath.includes(file)));
 				}
 
 				return true;
 			}
 		});
+
 		let changed = content !== originalContent;
 
 		if (changed) {
 			if (this.options.dryRun) {
-				console.info(`Would have written this to ${ filePath }:\n`, content);
+				console.info(`Would have written this to ${ outputPath }:\n`, content);
 			}
 			else {
 				await fs.promises.writeFile(outputPath, content, "utf-8");
 
 				if (this.options.verbose) {
-					console.info(`Written ${ filePath } successfully`);
+					console.info(`Written ${ outputPath } successfully`);
 				}
 			}
 		}
