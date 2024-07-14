@@ -139,24 +139,10 @@ replace:
 - { from: </blink>, to: "</span>" }
 ```
 
-#### Global settings
+#### Parent settings
 
-You can also set global settings for all replacements by including `key = value` pairs at the top level of the file.
-
-```toml
-files = "content/*.md"
-
-[[ replace ]]
-from = "<br>"
-```
-```yaml
-files: content/*.md
-replace:
-- from: <br>
-```
-
-You can also specify any replacement settings (`from`, `to`, `regexp`, `case_insensitive` etc) as global settings
-to set defaults that are applied to all replacements that don’t override them.
+Any child replacements inherit their `regexp` and `case_insensitive` settings from their parent,
+so you don’t have to specify them multiple times.
 
 ### Refer to the matched string
 
@@ -171,6 +157,9 @@ to = '<abbr title="BAtch Find & Replace">$&</abbr>'
 from: bafr
 to: '<abbr title="BAtch Find & Replace">$&</abbr>'
 ```
+
+Beyond `$&` there is [a bunch of other special replacements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement), all starting with a dollar sign (`$`).
+To disable these special replacements, use `literal = true` / `literal: true`.
 
 ### Append/prepend
 
