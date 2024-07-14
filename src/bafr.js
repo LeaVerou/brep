@@ -67,7 +67,7 @@ export default class Bafr {
 		let originalContent = await fs.promises.readFile(inputPath, "utf-8");
 		let content = this.text(originalContent, {
 			filter (replacement) {
-				if (replacement.files) {
+				if (replacement.hasOwnProperty("files")) {
 					// Test path against files criteria
 					replacement.files = Array.isArray(replacement.files) ? replacement.files : [replacement.files];
 					return Boolean(replacement.files.find(file => inputPath.includes(file)));
