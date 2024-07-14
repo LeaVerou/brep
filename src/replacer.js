@@ -1,46 +1,56 @@
+import {
+	resolveReplacementArgs,
+	emulateStringReplacement,
+} from "./util.js"
+
 export const fromRegexp = Symbol("from regexp");
 
 export default class Replacer {
-	constructor (script) {
+	constructor (script, parent) {
+		this.parent = parent;
+		this.source = script;
+
+		if (Array.isArray(script)) {
+			// Convert [from, to] shorthand syntax to object
+			let [from, to] = script;
+			script = {from, to};
+		}
+
+		if (parent) {
+			// Inherited properties
+			for (let prop in ["regexp", "case_insensitive"]) {
+				this[prop] = parent[prop];
+			}
+		}
+
 		Object.assign(this, script);
 
-		// This ensures that we can specify a single replacement without the array
-		// (all properties are just inherited from the parent)
-		this.replace ??= [{}];
+		this.compile();
 
-		for (let i = 0; i < this.replace.length; i++) {
-			let replacement = this.replace[i];
+		if (this.replace) {
+			this.replace = this.replace.map(replacement => new Replacer(replacement, this));
+		}
+	}
 
-			if (Array.isArray(replacement)) {
-				// Convert [from, to] shorthand syntax to object
-				let [from, to] = replacement;
-				this.replace[i] = replacement = Object.assign(Object.create(this), {from, to});
-			}
-			else {
-				Object.setPrototypeOf(replacement, this);
-			}
+	/**
+	 * Create a regex for this replacement, if needed
+	 */
+	compile () {
+		let { from, before, after, regexp, case_insensitive } = this;
 
-			replacement.to ??= replacement.insert ?? "";
+		let createRegexp = regexp || before || after || case_insensitive;
 
-			let { from = "", before, after, regexp, case_insensitive } = replacement;
-
-
-			let createRegexp = regexp || before || after || case_insensitive;
-
-			if (!createRegexp) {
-				continue;
-			}
-
+		if (createRegexp && (from || before || after)) {
 			let flags = "gmv" + (case_insensitive ? "i" : "");
+			let pattern = [
+				after  ? `(?<=${ regexp ? after  : escapeRegExp(after) })`  : "",
+				from   ?         regexp ? from   : escapeRegExp(from)       : "",
+				before ?  `(?=${ regexp ? before : escapeRegExp(before) })` : "",
+			].join("");
 
-			before = before ? `(?=${ regexp ? replacement.before : escapeRegExp(replacement.before) })` : "";
-			after = after ?   `(?<=${ regexp ? replacement.after : escapeRegExp(replacement.after) })` : "";
-
-			if (!regexp) {
-				from = escapeRegExp(from);
+			if (pattern) {
+				this[fromRegexp] = RegExp(pattern, flags);
 			}
-
-			replacement[fromRegexp] = RegExp(`${ after }${ from }${ before }`, flags);
 		}
 	}
 
@@ -50,19 +60,45 @@ export default class Replacer {
 	 * @returns {boolean}
 	 */
 	transform (content, options) {
-		for (let replacement of this.replace) {
-			if (options?.filter && !options.filter(replacement)) {
-				continue;
-			}
+		if (options?.filter && !options.filter(this)) {
+			// Skip
+			return content;
+		}
 
-			let from = replacement[fromRegexp] ?? replacement.from;
+		let from = this[fromRegexp] ?? this.from;
+		let to = this.to ?? this.insert ?? "";
 
+		if (from) {
 			let prevContent;
 			do {
 				prevContent = content;
-				content = content.replaceAll(from, replacement.to);
+				if (from) {
+					let simpleTo = !this.literal && !this.replace;
+					content = content.replaceAll(from, simpleTo ? to : (...args) => {
+						let resolvedArgs = resolveReplacementArgs(args);
+
+						if (!this.literal) {
+							// Replace special replacement patterns
+							to = emulateStringReplacement(resolvedArgs);
+						}
+
+						if (this.replace) {
+							// Child replacements
+							for (let replacement of this.replace) {
+								to = replacement.transform(to);
+							}
+						}
+
+						return to;
+					});
+				}
 			}
-			while (replacement.recursive && prevContent !== content && content);
+			while (this.recursive && prevContent !== content && content);
+		}
+		else if (this.replace) {
+			for (let replacement of this.replace) {
+				content = replacement.transform(content);
+			}
 		}
 
 		return content;

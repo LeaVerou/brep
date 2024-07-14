@@ -73,3 +73,59 @@ export function resolvePath (from, to) {
 	let fromParsed = path.parse(from);
 	return path.resolve(fromParsed.dir, to, fromParsed.base);
 }
+
+/**
+ * Resolve what the args of a function replacer in string.replace() mean
+ * @param {Array} args
+ * @returns {object}
+ */
+export function resolveReplacementArgs (args) {
+	let ret = {
+		match: args.shift(),
+	};
+
+	if (typeof args.at(-1) === "object") {
+		ret.groups = args.pop();
+	}
+
+	ret.string = args.pop();
+	ret.index = args.pop();
+	ret.cgroups = args;
+
+	return ret;
+}
+
+/**
+ * Emulate the special replacements of a string replacemement in string.replace()
+ * with code that can be used in a function replacement
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement
+ * @param {object} args - Resolved args
+ * @param {string} to
+ * @returns {string}
+ */
+export function emulateStringReplacement (args, to) {
+	if (!to.includes("$")) {
+		// Short-circuit
+		return to;
+	}
+
+	let {match, groups, string, index, cgroups} = args;
+
+	return to.replaceAll(/\$(\$|\d+|&|`|'|<(.+?)>)/g, (m, type, groupName) => {
+		switch (type) {
+			case "&": return match;
+			case "$": return "$";
+			case "`": return string.slice(0, index);
+			case "'": return string.slice(index + match.length);
+		}
+
+		if (type > 0 && cgroups.length >= type) {
+			// Indexed catpuring group
+			return cgroups[type - 1];
+		}
+		if (groupName && groupName in groups) {
+			return groups[groupName];
+		}
+		return m; // failsafe
+	});
+}
