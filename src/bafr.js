@@ -3,18 +3,19 @@ import toml from "toml";
 import yaml from "yaml";
 import {globby} from "globby";
 import Replacer from "./replacer.js";
-import { resolvePath } from "./util.js";
+import { resolvePath, applyDefaults } from "./util.js";
 
 let parsers = {
 	toml,
 	yaml,
+	"yml": yaml,
 	json: JSON,
 };
 
 export default class Bafr {
 	constructor (script, options = {}) {
 		this.script = new Replacer(script);
-		this.options = options;
+		this.options = applyDefaults(options, this.constructor.defaultOptions);
 	}
 
 	/**
@@ -106,6 +107,9 @@ export default class Bafr {
 		};
 	}
 
+	/**
+	 * Apply the script to multiple files determined by a glob
+	 */
 	async glob (glob = this.options.files ?? this.script.files) {
 		if (!glob) {
 			throw new Error(`No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
@@ -131,9 +135,14 @@ export default class Bafr {
 		return this.script;
 	}
 
+	static defaultOptions = {
+		verbose: false,
+		dryRun: false,
+	};
+
 	static fromPath (path, options) {
 		let script;
-		let format = options.format ?? path.match(/\.([^.]+)$/)[1];
+		let format = options.format ?? path.match(/\.([^.]+)$/)[1]; // default to get by extension
 		let parser = parsers[format] ?? toml;
 
 		try {

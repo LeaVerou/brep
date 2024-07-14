@@ -1,21 +1,36 @@
-#!/usr/bin/env node
-
 import Bafr from "./bafr.js";
 import * as util from "./util.js";
 
-let start = performance.now();
+export default async function cli (script, options) {
+	let start = performance.now();
 
-let args = util.parseArgs(process.argv, {
-	verbose: false,
-	dryRun: false,
-});
+	if (arguments.length === 1) {
+		[options, script = options.script] = [script, ];
 
-let bafr = Bafr.fromPath(args.script, args);
+		// CLI process.argv
+		if (Array.isArray(options)) {
+			options = util.parseArgs(options);
+			let files;
+			[script, ...files] = options.positional;
+			options.files ??= files;
+		}
+	}
 
-let outcome = await bafr.glob();
-outcome.timeTaken = await outcome.timeTaken;
+	if (!script) {
+		throw new Error("Please provide a path to a script file as the first argument.");
+	}
 
-let message = util.serializeOutcome(outcome);
-let totalTimeTaken = performance.now() - start;
+	let bafr = Bafr.fromPath(script, options);
 
-console.info(message, `(total time: ${ util.formatTimeTaken(totalTimeTaken) })`);
+	let outcome = await bafr.glob();
+	outcome.timeTaken = await outcome.timeTaken;
+
+	let message = util.serializeOutcome(outcome);
+	outcome.totalTimeTaken = performance.now() - start;
+
+	if (!bafr.options.quiet) {
+		console.info(message, `(total time: ${ util.formatTimeTaken(outcome.totalTimeTaken) })`);
+	}
+
+	return outcome;
+}

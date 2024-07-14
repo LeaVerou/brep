@@ -5,10 +5,11 @@
   "main": "src/bafr.js",
   "type": "module",
   "bin": {
-    "bafr": "src/cli.js"
+    "bafr": "bin/bafr.js"
   },
   "exports": {
     ".": "./src/bafr.js",
+    "./cli": "./src/cli.js",
     "./replacer": "./src/replacer.js"
   },
   "scripts": {

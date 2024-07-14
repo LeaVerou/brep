@@ -1,25 +1,40 @@
 import path from "path";
 
-export function parseArgs (argv = process.argv, defaults = {}) {
+export function applyDefaults (options, defaults) {
+	return Object.assign({}, defaults, options);
+}
+
+/**
+ * Generic function to parse Node.js CLI args
+ * @param {*} argv
+ * @param {*} defaults
+ * @returns {object}
+ */
+export function parseArgs (argv = process.argv) {
 	argv = argv.slice(2);
-	let script = argv.shift();
-
-	let ret = Object.assign({script}, defaults); // no default for script so no risk of overwriting
-
-	if (!ret.script) {
-		throw new Error("Please provide a path to a script file as the first argument.");
-	}
+	let ret = {positional: []};
+	let openFlag = false;
 
 	for (let arg of argv) {
 		if (arg.startsWith("--")) {
-			// Flag
+			// Lengthy flag, e.g. --dry-run
 			let [key, ...value] = arg.slice(2).split("=");
 			value = value.join("="); // value may contain =, so we need to rejoin it
 			key = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 			ret[key] = value || true;
 		}
-		else if (!ret.files) {
-			ret.files = arg;
+		else if (/^\-[a-z]$/.test(arg)) {
+			// Single letter flag, e.g. -D or -o
+			openFlag = arg.slice(1);
+		}
+		else {
+			if (openFlag) {
+				ret[openFlag] = arg;
+				openFlag = false;
+			}
+			else {
+				ret.positional.push(arg);
+			}
 		}
 	}
 
