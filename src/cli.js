@@ -5,11 +5,9 @@ export default async function cli (script, options) {
 	let start = performance.now();
 
 	if (arguments.length === 1) {
-		[options, script = options.script] = [script, ];
-
 		// CLI process.argv
-		if (Array.isArray(options)) {
-			options = util.parseArgs(options);
+		if (Array.isArray(script)) {
+			options = util.parseArgs(script);
 			let files;
 			[script, ...files] = options.positional;
 			options.files ??= files;

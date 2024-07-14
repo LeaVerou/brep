@@ -157,7 +157,7 @@ export default class Bafr {
 		dryRun: false,
 	};
 
-	static fromPath (path, options) {
+	static fromPath (path, options = {}) {
 		let script;
 		let format = options.format ?? path.match(/\.([^.]+)$/)[1]; // default to get by extension
 		let parser = parsers[format] ?? toml;
