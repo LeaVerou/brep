@@ -15,6 +15,14 @@ export default {
 			expect: "faaaa",
 		},
 		{
+			name: "[from, to]",
+			args: [
+				"foooo",
+				["o", "a"],
+			],
+			expect: "faaaa",
+		},
+		{
 			name: "Case insensitive",
 			args: [
 				"foooo",
@@ -29,6 +37,38 @@ export default {
 				{from: "\\((a+)\\)", to: "$1", regexp: true},
 			],
 			expect: "foaao",
+		},
+		{
+			name: "$&",
+			args: [
+				"abc",
+				{from: "b", to: "[$&]"},
+			],
+			expect: "a[b]c",
+		},
+		{
+			name: "$`",
+			args: [
+				"abc",
+				{from: "b", to: "[$`]"},
+			],
+			expect: "a[a]c",
+		},
+		{
+			name: "$'",
+			args: [
+				"abc",
+				{from: "b", to: "[$']"},
+			],
+			expect: "a[c]c",
+		},
+		{
+			name: "Indexed capturing group",
+			args: [
+				"a[b]c",
+				{regexp: true, from: "a\\[(b)\\]c", to: "a$1c"},
+			],
+			expect: "abc",
 		},
 	]
 }
