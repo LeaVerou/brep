@@ -1,9 +1,9 @@
 import fs from "fs";
-import path from "path";
 import toml from "toml";
 import yaml from "yaml";
 import {globby} from "globby";
 import Replacer from "./replacer.js";
+import { resolvePath } from "./util.js";
 
 let parsers = {
 	toml,
@@ -43,7 +43,7 @@ export default class Bafr {
 				outputPath = outputPath.replace(/\.[^.]+$/, this.script.extension.replace(/^\.?/, "."));
 			}
 			if (this.script.path) {
-				outputPath = path.join(this.script.path, outputPath);
+				outputPath = resolvePath(outputPath, this.script.path);
 			}
 		}
 
