@@ -60,10 +60,12 @@ export default class Replacer {
 	 * @returns {boolean}
 	 */
 	transform (content, options) {
-		if (options?.filter && !options.filter(this)) {
+		if (!content || options?.filter && !options.filter(this)) {
 			// Skip
 			return content;
 		}
+
+		if (this.parent?.parent) console.log(content);
 
 		let from = this[fromRegexp] ?? this.from;
 		let to = this.to ?? this.insert ?? "";

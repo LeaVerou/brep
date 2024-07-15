@@ -104,7 +104,7 @@ export function resolveReplacementArgs (args) {
  * @returns {string}
  */
 export function emulateStringReplacement (args, to) {
-	if (!to.includes("$")) {
+	if (!to || !to.includes("$")) {
 		// Short-circuit
 		return to;
 	}
