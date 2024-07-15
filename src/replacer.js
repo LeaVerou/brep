@@ -76,10 +76,11 @@ export default class Replacer {
 					let simpleTo = !this.literal && !this.replace;
 					content = content.replaceAll(from, simpleTo ? to : (...args) => {
 						let resolvedArgs = resolveReplacementArgs(args);
+						to = this.to ?? this.insert ?? "";
 
 						if (!this.literal) {
 							// Replace special replacement patterns
-							to = emulateStringReplacement(resolvedArgs);
+							to = emulateStringReplacement(resolvedArgs, to);
 						}
 
 						if (this.replace) {
