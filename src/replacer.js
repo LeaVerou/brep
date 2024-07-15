@@ -65,7 +65,7 @@ export default class Replacer {
 			return content;
 		}
 
-		if (this.parent?.parent) console.log(content);
+		// if (this.parent?.parent) console.log(content);
 
 		let from = this[fromRegexp] ?? this.from;
 		let to = this.to ?? this.insert ?? "";
