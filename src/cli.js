@@ -8,9 +8,12 @@ export default async function cli (script, options) {
 		// CLI process.argv
 		if (Array.isArray(script)) {
 			options = util.parseArgs(script);
+
 			let files;
 			[script, ...files] = options.positional;
-			options.files ??= files;
+			if (files.length > 0) {
+				options.files ??= files;
+			}
 		}
 	}
 

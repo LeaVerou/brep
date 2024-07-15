@@ -26,6 +26,21 @@ export default class Bafr {
 		}
 	}
 
+	getFiles () {
+		// options have priority over script
+		// then paths have priority over files
+		if (this.options.paths) {
+			return Object.keys(this.options.paths);
+		}
+		if (this.options.files) {
+			return this.options.files;
+		}
+		if (this.script.paths) {
+			return Object.keys(this.script.paths);
+		}
+		return this.script.files;
+	}
+
 	/**
 	 * Apply the script to a string of text
 	 * @param {string} content
@@ -127,7 +142,7 @@ export default class Bafr {
 	/**
 	 * Apply the script to multiple files determined by a glob
 	 */
-	async glob (glob = this.options.files ?? this.script.files) {
+	async glob (glob = this.getFiles()) {
 		if (!glob) {
 			throw new Error(`No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
 		}
