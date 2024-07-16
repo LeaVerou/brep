@@ -95,7 +95,7 @@ bafr uses the [JS dialect for regular expressions](https://developer.mozilla.org
 - `m` (multiline): `^` and `$` match the start and end of lines, not of the whole file.
 - `s` (dotAll): `.` matches any character, including newlines. Use `[^\r\n]` to match any character _except_ newlines.
 - `v` (unicodeSets): More reasonable Unicode handling, and named Unicode classes as `\p{…}` (e.g. `\p{Letter}`).
-- The `i` flag (case-insensitive) is not on by default, but can be enabled with the `case_insensitive` option.
+- The `i` flag (case-insensitive) is not on by default, but can be enabled with the `ignore_case` option.
 
 ### Multiple find & replace operations
 
@@ -148,7 +148,7 @@ replace:
 
 #### Parent settings
 
-Any child replacements inherit their `regexp` and `case_insensitive` settings from their parent,
+Any child replacements inherit their `regexp` and `ignore_case` settings from their parent,
 so you don’t have to specify them multiple times.
 
 ### Refer to the matched string
@@ -225,7 +225,7 @@ replace = [
 	["foo", "bar"],
 	["baz", "quux"],
 	# cannot be combined with [[ replace ]] blocks
-	{ from = "yolo", to = "hello", case_sensitive = true },
+	{ from = "yolo", to = "hello", ignore_case = true },
 ]
 ```
 
@@ -243,7 +243,7 @@ replace = [
 | `before` | String | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
 | `after` | String | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
 | `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
-| `case_sensitive` | Boolean | `false` | Whether the search should be case-sensitive. |
+| `ignore_case` | Boolean | `false` | Set to `true` to make the search should case-insensitive. |
 | `recursive` | Boolean | `false` | Whether the replacement should be run recursively on its own output until it stops changing the output. |
 | `files` | String or array of strings | - | Partial paths to filter against. This is an additional filter over the files being processed, to apply specific replacements only to some of the files. |
 

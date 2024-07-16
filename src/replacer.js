@@ -18,7 +18,7 @@ export default class Replacer {
 
 		if (parent) {
 			// Inherited properties
-			for (let prop in ["regexp", "case_insensitive"]) {
+			for (let prop in ["regexp", "ignore_case"]) {
 				this[prop] = parent[prop];
 			}
 		}
@@ -36,12 +36,12 @@ export default class Replacer {
 	 * Create a regex for this replacement, if needed
 	 */
 	compile () {
-		let { from, before, after, regexp, case_insensitive } = this;
+		let { from, before, after, regexp, ignore_case } = this;
+		let createRegexp = regexp || before || after || ignore_case;
+		let isReplacement = Boolean(from || before || after);
 
-		let createRegexp = regexp || before || after || case_insensitive;
-
-		if (createRegexp && (from || before || after)) {
-			let flags = "gmvs" + (case_insensitive ? "i" : "");
+		if (createRegexp && isReplacement) {
+			let flags = "gmvs" + (ignore_case ? "i" : "");
 			let pattern = [
 				after  ? `(?<=${ regexp ? after  : escapeRegExp(after) })`  : "",
 				from   ?         regexp ? from   : escapeRegExp(from)       : "",

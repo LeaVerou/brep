@@ -27,7 +27,7 @@ export default {
 			expect: "/o/gmv",
 		},
 		{
-			arg: {regexp: true, from: "o", case_insensitive: true},
+			arg: {regexp: true, from: "o", ignore_case: true},
 			expect: "/o/gimv",
 		},
 		{

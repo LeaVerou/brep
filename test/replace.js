@@ -26,7 +26,7 @@ export default {
 			name: "Case insensitive",
 			args: [
 				"foooo",
-				{from: "O", to: "a", case_insensitive: true},
+				{from: "O", to: "a", ignore_case: true},
 			],
 			expect: "faaaa",
 		},
