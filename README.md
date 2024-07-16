@@ -146,11 +146,6 @@ replace:
 - { from: </blink>, to: "</span>" }
 ```
 
-#### Parent settings
-
-Any child replacements inherit their `regexp` and `ignore_case` settings from their parent,
-so you don’t have to specify them multiple times.
-
 ### Refer to the matched string
 
 You can always use `$&` to refer to the matched string (even when not in regexp mode).
@@ -201,12 +196,10 @@ to = "awesome bafr"
 
 Will convert "I am using bafr" to "I am using awesome bafr".
 
-## Shortcuts for many simple replacements
+## [from, to] shortcut syntax for many simple replacements
 
-There are many cases where you want to make many replacements, all with the same settings (specified before them) and just different `from`/`to` values.
-Bafr supports several shortcuts for this.
-
-### [from, to] replacements
+There are many cases where you want to make many replacements, all with the same settings (specified on their parent) and just different `from`/`to` values.
+Bafr supports a shortcut for this.
 
 Instead of declarations, you can specify from/to pairs directly by enclosing them in brackets, separated by a comma.
 This can be combined with regular replacements, though far more easily in YAML:
@@ -228,9 +221,6 @@ replace = [
 	{ from = "yolo", to = "hello", ignore_case = true },
 ]
 ```
-
-### Key-value replacements
-
 
 ## Syntax reference
 

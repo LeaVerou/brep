@@ -15,12 +15,12 @@ export default class Replacer {
 			// Convert [from, to] shorthand syntax to object
 			let [from, to] = script;
 			script = {from, to};
-		}
 
-		if (parent) {
-			// Inherited properties
-			for (let prop in ["regexp", "ignore_case"]) {
-				this[prop] = parent[prop];
+			if (parent) {
+				// Inherit settings from parent
+				for (let prop in ["regexp", "ignore_case", "whole_word"]) {
+					script[prop] = parent[prop];
+				}
 			}
 		}
 
