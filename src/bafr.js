@@ -1,15 +1,7 @@
 import fs from "fs";
-import toml from "toml";
-import yaml from "yaml";
+import parse from "./parse.js";
 import {globby} from "globby";
 import Replacer from "./replacer.js";
-
-let parsers = {
-	toml,
-	yaml,
-	"yml": yaml,
-	json: JSON,
-};
 import { applyDefaults } from "./util.js";
 import { resolvePath } from "./util-node.js";
 
@@ -176,7 +168,6 @@ export default class Bafr {
 	static fromPath (path, options = {}) {
 		let script;
 		let format = options.format ?? path.match(/\.([^.]+)$/)[1]; // default to get by extension
-		let parser = parsers[format] ?? toml;
 
 		try {
 			script = fs.readFileSync(path, "utf-8");
@@ -185,13 +176,7 @@ export default class Bafr {
 			throw new Error(`Failed to read script file: ${ error.message }`);
 		}
 
-		try {
-			script = parser.parse(script);
-		}
-		catch (e) {
-			throw new Error(`Failed to parse script file as ${format}. Original error was:`, e);
-		}
-
+		script = parse(script, format);
 		return new this(script, options);
 	}
 }
