@@ -41,7 +41,7 @@ export default class Replacer {
 		let createRegexp = regexp || before || after || case_insensitive;
 
 		if (createRegexp && (from || before || after)) {
-			let flags = "gmv" + (case_insensitive ? "i" : "");
+			let flags = "gmvs" + (case_insensitive ? "i" : "");
 			let pattern = [
 				after  ? `(?<=${ regexp ? after  : escapeRegExp(after) })`  : "",
 				from   ?         regexp ? from   : escapeRegExp(from)       : "",
