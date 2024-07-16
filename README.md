@@ -247,7 +247,7 @@ replace = [
 | `files` | String or array of strings | - | A glob pattern to match files to process. |
 | `suffix` | String | `""` | Instead of overwriting the original file, append this suffix to its filename |
 | `extension` | String | - | Instead of overwriting the original file, change its extension to this value. Can start with a `.` but doesn’t need to. |
-| `path` | String | - | Instead of overwriting the original file, change its location to this value. Both absolute and relative paths are supported. If relative, it's resolved based on the original file's location. |
+| `path` | String | - | Allows the new file to be in a different directory. Both absolute and relative paths are supported. If relative, it's resolved based on the original file's location. For example, `..` will write a file one directory level up. |
 
 ## CLI
 
