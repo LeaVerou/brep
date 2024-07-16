@@ -33,8 +33,10 @@ The docs below will show both TOML and YAML, and it’s up to you what you prefe
 
 #### Stripping away matches
 
-Here is the most basic bafr script: just a single `from` declaration that strips away all matches.
-This bafr script strips away all `<br>` tags:
+The most basic bafr script is a single replacement consisting of
+a single `from` declaration.
+By default, when no `to` is specified, it defaults to the empty string, i.e. stripping away all matches.
+For example, this bafr script strips away all `<br>` tags:
 
 ```toml
 from = "<br>"
@@ -88,7 +90,12 @@ from: <blink>([\S\s]+?)</blink>
 to: $1 # $1 will match the content of the tag
 ```
 
-bafr uses the [JS syntax for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)).
+bafr uses the [JS dialect for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)) with the following flags:
+- `g` (global): Replace all occurrences, not just the first one
+- `m` (multiline): `^` and `$` match the start and end of lines, not of the whole file.
+- `s` (dotAll): `.` matches any character, including newlines. Use `[^\r\n]` to match any character _except_ newlines.
+- `v` (unicodeSets): More reasonable Unicode handling, and named Unicode classes as `\p{…}` (e.g. `\p{Letter}`).
+- The `i` flag (case-insensitive) is not on by default, but can be enabled with the `case_insensitive` option.
 
 ### Multiple find & replace operations
 
