@@ -17,6 +17,12 @@ export default async function cli (script, options) {
 		}
 	}
 
+	if (options.version) {
+		let version = (await import("../package.json", {with: {type: "json"}})).default.version;
+		console.info(`Bafr v${ version }`);
+		return;
+	}
+
 	if (!script) {
 		throw new Error("Please provide a path to a script file as the first argument.");
 	}

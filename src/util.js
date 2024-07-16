@@ -8,7 +8,10 @@ export function applyDefaults (options, defaults) {
  * @param {*} defaults
  * @returns {object}
  */
-export function parseArgs (argv = process.argv) {
+export function parseArgs (argv = process.argv, {
+	short = {v: "version"},
+	boolean = new Set(["version"])
+} = {}) {
 	argv = argv.slice(2);
 	let ret = {positional: []};
 	let openFlag = false;
@@ -18,12 +21,19 @@ export function parseArgs (argv = process.argv) {
 			// Lengthy flag, e.g. --dry-run
 			let [key, ...value] = arg.slice(2).split("=");
 			value = value.join("="); // value may contain =, so we need to rejoin it
+			// Convert kebab-case to camelCase
 			key = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 			ret[key] = value || true;
 		}
 		else if (/^\-[a-z]$/.test(arg)) {
-			// Single letter flag, e.g. -D or -o
-			openFlag = arg.slice(1);
+			// Short flag, e.g. -v or -D
+			let name = arg.slice(1);
+			name = short[name] ?? name;
+			ret[name] = true;
+
+			if (!boolean.has(name)) {
+				openFlag = name;
+			}
 		}
 		else {
 			if (openFlag) {
