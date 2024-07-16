@@ -5,32 +5,32 @@ export default {
 	tests: [
 		{
 			name: "resolvePath()",
-			run (from, to) {
-				let path = resolvePath(from, to);
+			run (to) {
+				let path = resolvePath(this.data.from, to);
 				return to.startsWith("/") ? path : path.replace(process.cwd() + "/", "");
 			},
-			getName (from, to) {
-				return to;
+			data: {
+				from: "papers/foo/bar.tex",
 			},
 			tests: [
 				{
-					args: ["papers/foo/bar.tex", "."],
+					arg: ".",
 					expect: "papers/foo/bar.tex",
 				},
 				{
-					args: ["papers/foo/bar.tex", ".."],
+					arg: "..",
 					expect: "papers/bar.tex",
 				},
 				{
-					args: ["papers/foo/bar.tex", "../../src"],
+					arg: "../../src",
 					expect: "src/bar.tex",
 				},
 				{
-					args: ["papers/foo/bar.tex", "baz/yolo"],
+					arg: "baz/yolo",
 					expect: "papers/foo/baz/yolo/bar.tex",
 				},
 				{
-					args: ["papers/foo/bar.tex", "/baz"],
+					arg: "/baz",
 					expect: "/baz/bar.tex",
 				},
 			],
