@@ -39,6 +39,38 @@ export default {
 			expect: "foaao",
 		},
 		{
+			name: "Whole word",
+			args: [
+				"foo foooooo foo.bar foo",
+				{from: "foo", to: "baz", whole_word: true},
+			],
+			expect: "baz foooooo baz.bar baz",
+		},
+		{
+			name: "Whole word unicode",
+			args: [
+				"γάτα γατάκι",
+				{from: "γάτα", to: "σκύλος", whole_word: true},
+			],
+			expect: "σκύλος γατάκι",
+		},
+		{
+			name: "Whole word surrounded by non-word boundaries",
+			args: [
+				"=<foo>=",
+				{from: "<foo>", to: "bar", whole_word: true},
+			],
+			expect: "=bar=",
+		},
+		{
+			name: "Whole word beginning and ending in non-word characters, surrounded by word characters",
+			args: [
+				"a<foo>b",
+				{from: "<foo>", to: "bar", whole_word: true},
+			],
+			expect: "abarb",
+		},
+		{
 			name: "$&",
 			args: [
 				"abc",

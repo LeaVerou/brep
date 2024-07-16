@@ -4,6 +4,7 @@ import {
 } from "./util.js"
 
 export const fromRegexp = Symbol("from regexp");
+const nonword = "[^_\\p{L}\\p{N}]";
 
 export default class Replacer {
 	constructor (script, parent) {
@@ -36,15 +37,17 @@ export default class Replacer {
 	 * Create a regex for this replacement, if needed
 	 */
 	compile () {
-		let { from, before, after, regexp, ignore_case } = this;
-		let createRegexp = regexp || before || after || ignore_case;
+		let { from, before, after, regexp, ignore_case, whole_word } = this;
+		let createRegexp = regexp || before || after || ignore_case || whole_word;
 		let isReplacement = Boolean(from || before || after);
 
 		if (createRegexp && isReplacement) {
 			let flags = "gmvs" + (ignore_case ? "i" : "");
 			let pattern = [
 				after  ? `(?<=${ regexp ? after  : escapeRegExp(after) })`  : "",
+				whole_word ? `(?:^|(?=${ nonword })|(?<=${ nonword }))` : "",
 				from   ?         regexp ? from   : escapeRegExp(from)       : "",
+				whole_word ? `(?:$|(?=${ nonword })|(?<=${ nonword }))` : "",
 				before ?  `(?=${ regexp ? before : escapeRegExp(before) })` : "",
 			].join("");
 

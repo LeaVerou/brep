@@ -244,6 +244,7 @@ replace = [
 | `after` | String | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
 | `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
 | `ignore_case` | Boolean | `false` | Set to `true` to make the search should case-insensitive. |
+| `whole_word` | Boolean | `false` | Match only matches either beginning/ending in non-word characters or preceded/followed by non-word characters. Unicode aware. |
 | `recursive` | Boolean | `false` | Whether the replacement should be run recursively on its own output until it stops changing the output. |
 | `files` | String or array of strings | - | Partial paths to filter against. This is an additional filter over the files being processed, to apply specific replacements only to some of the files. |
 
