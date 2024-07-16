@@ -24,31 +24,31 @@ export default {
 		},
 		{
 			arg: {regexp: true, from: "o"},
-			expect: "/o/gmv",
+			expect: "/o/gmsv",
 		},
 		{
 			arg: {regexp: true, from: "o", ignore_case: true},
-			expect: "/o/gimv",
+			expect: "/o/gimsv",
 		},
 		{
 			arg: {before: "b"},
-			expect: "/(?=b)/gmv",
+			expect: "/(?=b)/gmsv",
 		},
 		{
 			arg: {after: "a"},
-			expect: "/(?<=a)/gmv",
+			expect: "/(?<=a)/gmsv",
 		},
 		{
 			arg: {before: "b", from: "f"},
-			expect: "/f(?=b)/gmv",
+			expect: "/f(?=b)/gmsv",
 		},
 		{
 			arg: {after: "a", from: "f"},
-			expect: "/(?<=a)f/gmv",
+			expect: "/(?<=a)f/gmsv",
 		},
 		{
 			arg: {after: "a", from: "f", before: "b"},
-			expect: "/(?<=a)f(?=b)/gmv",
+			expect: "/(?<=a)f(?=b)/gmsv",
 		}
 	]
 }
