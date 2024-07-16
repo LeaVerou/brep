@@ -17,7 +17,7 @@ export default async function cli (script, options) {
 		}
 	}
 
-	if (options.version) {
+	if (options?.version) {
 		let version = (await import("../package.json", {with: {type: "json"}})).default.version;
 		console.info(`Bafr v${ version }`);
 		return;
