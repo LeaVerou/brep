@@ -1,4 +1,4 @@
-import { resolvePath } from "../src/util.js";
+import { resolvePath } from "../src/util-node.js";
 
 export default {
 	name: "Utility functions",

@@ -3,7 +3,6 @@ import toml from "toml";
 import yaml from "yaml";
 import {globby} from "globby";
 import Replacer from "./replacer.js";
-import { resolvePath, applyDefaults } from "./util.js";
 
 let parsers = {
 	toml,
@@ -11,6 +10,8 @@ let parsers = {
 	"yml": yaml,
 	json: JSON,
 };
+import { applyDefaults } from "./util.js";
+import { resolvePath } from "./util-node.js";
 
 export default class Bafr {
 	constructor (script, options = {}) {
