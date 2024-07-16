@@ -1,0 +1,57 @@
+html {
+	font: 100%/1.5 system-ui;
+	min-height: 100vh;
+}
+
+textarea:invalid {
+	border-color: #c00;
+	background: #fee;
+}
+
+body {
+	display: grid;
+	gap: .5rem;
+	min-height: 100vh;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 1em;
+
+	@media (width > 500px) {
+		grid-template-columns: .5fr repeat(2, 1fr);
+		grid-template-rows: auto 1fr;
+	}
+
+	> header {
+		grid-column: 1 / -1;
+	}
+
+	> section {
+		display: flex;
+		flex-flow: column;
+
+		textarea {
+			flex: 1;
+		}
+	}
+}
+
+body > header {
+	h1, p {
+		margin: 0;
+	}
+}
+
+body > section {
+	textarea {
+		min-height: 15em;
+	}
+
+	pre > code {
+		overflow: auto;
+	}
+}
+
+.format {
+	font-weight: normal;
+	margin-left: .4em;
+}
