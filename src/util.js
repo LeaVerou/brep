@@ -59,13 +59,14 @@ export function serializeOutcome ({paths, changed, intact, timeTaken}) {
 
 export function formatTimeTaken (ms) {
 	let n = ms, unit = "ms";
-	if (ms >= 1000) {
+	if (n >= 1000) {
 		n /= 1000;
 		unit = "s";
-	}
-	if (n >= 60) {
-		n /= 60;
-		unit = "min";
+
+		if (n >= 60) {
+			n /= 60;
+			unit = "min";
+		}
 	}
 
 	return `${ n.toPrecision(3) } ${ unit }`;
