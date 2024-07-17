@@ -137,14 +137,15 @@ export default class Bafr {
 	 */
 	async glob (glob = this.getFiles()) {
 		if (!glob) {
-			throw new Error(`No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
+			console.warn(`[bafr] No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
+			return;
 		}
 
 		let paths = await globby(glob);
 
 		if (paths.length === 0) {
 			console.warn(`${ glob } matched no files. The current working directory (CWD) was: ${ process.cwd() }`);
-			process.exit();
+			return;
 		}
 
 		if (this.options.verbose) {

@@ -30,6 +30,11 @@ export default async function cli (script, options) {
 	let bafr = Bafr.fromPath(script, options);
 
 	let outcome = await bafr.glob();
+
+	if (!outcome) {
+		return;
+	}
+
 	outcome.timeTaken = await outcome.timeTaken;
 
 	let message = util.serializeOutcome(outcome);
