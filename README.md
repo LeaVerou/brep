@@ -242,7 +242,7 @@ to = "awesome brep"
 
 Will convert "I am using brep" to "I am using awesome brep".
 
-## [from, to] shortcut syntax for many simple replacements
+### [from, to] shortcut syntax for many simple replacements
 
 There are many cases where you want to make many replacements, all with the same settings (specified on their parent) and just different `from`/`to` values.
 Brep supports a shortcut for this.
@@ -270,7 +270,7 @@ replace = [
 
 ## Syntax reference
 
-### Replacement settings
+### Replacements
 
 | Key | Type | Default | Description |
 | --- | ---- | ------- | ----------- |
@@ -295,7 +295,7 @@ replace = [
 
 ## CLI
 
-To use the files specified in the script, simply run:
+To apply a brep script to the files specified in the script, simply run:
 
 ```sh
 brep script.brep.toml
@@ -317,29 +317,51 @@ brep script.brep --format=toml
 ```
 
 > [!NOTE]
-> You can name your script however you want, however ending in `.brep.ext` is recommended (where ext is `toml`, `yaml`, `json`, etc.) to make it clear that this is a brep script.
+> You can name your script however you want, however ending in `.brep.ext` can more clearly communicate that this is a brep script.
 
 ### Supported flags
 
-- `--verbose`
+- `--verbose`: Print out additional information
 - `--dry-run`: Just print out the output and don’t write anything
+- `--version`: Just print out the version and don’t do anything
+
+Any root-level setting can also be specified as a flag, e.g. `--suffix=-edited` or `--extension=txt`.
 
 ## JS API
 
-There are two classes: `Brep` that has the most functionality but only works in Node,
-and `Replacer` with the core functionality that works in both Node and the browser.
+You can access all of brep’s functionality via JS, and some of it even works client-side, in the browser!
 
-### `Replacer`
+### Accessing the CLI via JS (Node.js only)
+
+There is also the JS version of the CLI you can access as:
+
+```js
+import brep from "brep/cli";
+await brep("script.yaml");
+// Do stuff after script runs
+```
+
+### `Replacer` class (Browser-compatible)
+
+This is the core of brep and takes care of applying the replacements on strings of text.
 
 ```js
 import { Replacer } from "brep/replacer";
+```
+
+or, in the browser:
+
+```js
+import { Replacer } from "node_modules/brep/src/replacer.js";
 ```
 
 Instance methods:
 - `new Replacer(script, parent)`: Create a new instance of the replacer. `script` is the script object, `parent` is the parent replacer (if any).
 - `replacer.transform(content)`: Process a string and return the result.
 
-### `Brep` (Node.js-only)
+### `Brep` class (Node.js-only)
+
+This takes care of reading script files, parsing them, creating `Replacer` instances, and applying the brep script to files.
 
 ```js
 import Brep from "brep";
@@ -362,5 +384,4 @@ Instance methods:
 
 - Interactive mode
 - `--help` flag
-- `--version` flag
 
