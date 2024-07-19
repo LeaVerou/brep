@@ -30,7 +30,26 @@ There are three main syntaxes, each more appropriate for different use cases:
 2. [YAML](https://yaml.org/) when you want a more concise syntax for simple replacements
 3. [JSON](https://www.json.org/) is also supported. It’s not recommended for writing by hand but can be convenient as the output from other tools.
 
-The docs below will show both TOML and YAML, and it’s up to you what you prefer.
+Of all three, YAML is the most concise and human-readable, but can behave unpredictably or be confusing in edge cases (special symbols, multiline strings).
+TOML supports a very precise syntax, and multiline strings, but can look rather awkward.
+Lastly, JSON is very fragile and verbose, but has the best compatibility with other tools.
+
+|     | TOML | YAML | JSON |
+| --- | ---- | ---- | ---- |
+| Readability | ★★★☆☆ | ★★★★☆ | ★★☆☆☆ |
+| Conciseness | ★★☆☆☆ | ★★★★★ | ★★☆☆☆ |
+| Robustness[^robustness] | ★★★☆☆ | ★★☆☆☆ | ★☆☆☆☆ |
+| Compatibility | ★☆☆☆☆ | ★★☆☆☆ | ★★★★★ |
+| Supports comments? | ✅ | ✅ | 🚫 |
+| Multiline strings? | ✅ | ✅ but [very complex](https://yaml-multiline.info/) | 🚫[^crlf] |
+
+[^robustness]: Opposite of error-proneness. How hard is it to make mistakes?
+This includes both syntax errors or writing syntax that behaves differently than what you expect.
+
+[^crlf]: This refers to support for strings that can spread across multiple lines in your bafr script.
+You can always include line breaks by using `\n` to represent them.
+
+The docs below will show TOML and YAML, and it’s up to you what you prefer.
 
 #### Replacing text with different text
 
@@ -47,8 +66,15 @@ to = "\n"
 from: <br>
 to: "\n"
 ```
+```json
+{
+	"from": "<br>",
+	"to": "\n"
+}
+```
 
-Note that the YAML syntax allows you to not quote strings in [many cases](https://stackoverflow.com/a/22235064/90826), which can be quite convenient.
+Note that the YAML syntax allows you to not quote strings in [many cases](https://stackoverflow.com/a/22235064/90826),
+which can be quite convenient but can also create errors if you’re not careful.
 
 #### Multiline strings
 
@@ -59,8 +85,13 @@ from = "<br>"
 to = """
 """
 ```
+```yaml
+from: <br>
+to: >+
 
-I do not recommend using YAML for multiline strings.
+```
+
+I do not recommend using YAML for multiline strings but you can read more about the many different ways to do it [here](https://yaml-multiline.info/).
 
 #### Regular expressions
 
@@ -71,12 +102,19 @@ For example, here is how you’d strip all `<blink>` tags:
 ```toml
 regexp = true
 from = "<blink>([\S\s]+?)</blink>"
-to = "$1" # $1 will match the content of the tag
+to = "<span class=blink>$1</span>" # $1 will match the content of the tag
 ```
 ```yaml
 regexp: true
 from: <blink>([\S\s]+?)</blink>
-to: $1 # $1 will match the content of the tag
+to: <span class=blink>$1</span> # $1 will match the content of the tag
+```
+```json
+{
+	"regexp": true,
+	"from": "<blink>([\\S\\s]+?)</blink>",
+	"to": "<span class=blink>$1</span>"
+}
 ```
 
 brep uses the [JS dialect for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)) with the following flags:
@@ -101,38 +139,39 @@ To specify multiple find & replace operations, you simply add `[[ replace ]]` se
 ```toml
 [[ replace ]]
 from = "<blink>"
-
-[[ replace ]]
-from = "</blink>"
-```
-
-Here is how we would specify multiple replacements with a `to` field:
-
-```toml
-[[ replace ]]
-from = "<blink>"
-to = '<span class="blink">'
+to = "<span class=blink>"
 
 [[ replace ]]
 from = "</blink>"
 to = "</span>"
 ```
 
-#### Multiple replacements in YAML
+You can also do it like this:
 
-If you only need a single key (to strip matches away) YAML provides a very compact syntax:
-
-```yaml
-replace:
-- from: <blink>
-- from: </blink>
+```toml
+replace = [
+	{ from = "<blink>", to = "<span class=blink>" },
+	{ from = "</blink>", to = "</span>" },
+]
 ```
 
+#### Multiple replacements in YAML
+
 To specify multiple declarations, you need to enclose them in `{ }`:
+
 ```yaml
 replace:
 - { from: <blink>, to: '<span class="blink">' }
 - { from: </blink>, to: "</span>" }
+```
+
+#### Multiple replacements in JSON
+
+```json
+"replace": [
+	{"from": "<blink>", "to": "<span class=blink>"},
+	{"from": "</blink>", "to": "</span>"}
+]
 ```
 
 ### Nested replacements
@@ -141,19 +180,21 @@ In some cases it’s more convenient to match a larger part of the text and then
 In a way, that is similar to a text editor’s "find in selection" feature, except on steroids.
 
 ```yaml
-# Match sequences of JS comments
+# Match sequences of single-line JS comments
+regexp: true
 from: "(^//[^\n\r]*$)+"
-to = "/*$&*/"
+to: "/* $& */" # Convert to block comments
 replace:
 # Strip comment character
-- { from: "^//", to: "" }
+- { regexp: true, from: "^//", to: "" }
+- { regexp: true, from: "^/* //", to: "/*" }
 ```
 
 If you specify a `to`, it will be applied _before_ the child replacements.
 
 ### Refer to the matched string
 
-You can always use `$&` to refer to the matched string (even when not in regexp mode).
+You can use `$&` to refer to the matched string (even when not in regexp mode).
 For example, to wrap every instance of "brep" with an `<abbr>` tag you can do:
 
 ```toml
@@ -295,6 +336,7 @@ import { Replacer } from "brep/replacer";
 ```
 
 Instance methods:
+- `new Replacer(script, parent)`: Create a new instance of the replacer. `script` is the script object, `parent` is the parent replacer (if any).
 - `replacer.transform(content)`: Process a string and return the result.
 
 ### `Brep` (Node.js-only)
