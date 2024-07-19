@@ -14,6 +14,15 @@ brep myscript.brep.toml src/**/*.html
 This will apply the script `myscript.brep.toml` to all HTML files in the `src` folder and its subfolders.
 You don’t need to specify the file paths multiple times if they don’t change, you can include them in your script as defaults (and still override them if needed).
 
+## Contents
+
+1. [Installation](#installation)
+2. [Syntax](#syntax)
+3. [Syntax reference](#syntax-reference)
+4. [CLI](#cli)
+5. [JS API](#js-api)
+6. [Future plans](#future-plans)
+
 ## Installation
 
 You will need to have [Node.js](https://nodejs.org/) installed.
