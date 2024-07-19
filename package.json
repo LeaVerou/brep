@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "htest.dev": "^0.0.15",
-    "release-it": "^17.4.1"
+    "release-it": "^17.6.0"
   }
 }
