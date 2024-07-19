@@ -387,7 +387,6 @@ Instance methods:
 ### I/O
 
 - A way to intersect globs, e.g. the script specifies `**/*.html` then the script user specifies `folder/**` and all HTML files in `folder` are processed.
-- A way to change the extension of the output file
 
 ### CLI
 
