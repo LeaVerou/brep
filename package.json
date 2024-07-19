@@ -1,14 +1,14 @@
 {
-  "name": "bafr",
+  "name": "brep",
   "version": "0.0.8",
   "description": "Create scripts that transform files en masse with a simple declarative syntax based on a series of find & replace operations",
-  "main": "src/bafr.js",
+  "main": "src/brep.js",
   "type": "module",
   "bin": {
-    "bafr": "bin/bafr.js"
+    "brep": "bin/brep.js"
   },
   "exports": {
-    ".": "./src/bafr.js",
+    ".": "./src/brep.js",
     "./cli": "./src/cli.js",
     "./replacer": "./src/replacer.js"
   },
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leaverou/bafr.git"
+    "url": "git+https://github.com/leaverou/brep.git"
   },
   "keywords": [
     "find",

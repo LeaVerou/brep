@@ -5,7 +5,7 @@ import Replacer from "./replacer.js";
 import { applyDefaults } from "./util.js";
 import { resolvePath } from "./util-node.js";
 
-export default class Bafr {
+export default class Brep {
 	constructor (script, options = {}) {
 		this.script = new Replacer(script);
 		this.options = applyDefaults(options, this.constructor.defaultOptions);
@@ -137,7 +137,7 @@ export default class Bafr {
 	 */
 	async glob (glob = this.getFiles()) {
 		if (!glob) {
-			console.warn(`[bafr] No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
+			console.warn(`[brep] No paths specified. Please specify a file path or glob either in the replacement script or as a second argument`);
 			return;
 		}
 

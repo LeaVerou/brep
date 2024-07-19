@@ -1,4 +1,4 @@
-import Bafr from "./bafr.js";
+import Brep from "./brep.js";
 import * as util from "./util.js";
 
 export default async function cli (script, options) {
@@ -19,7 +19,7 @@ export default async function cli (script, options) {
 
 	if (options?.version) {
 		let version = (await import("../package.json", {with: {type: "json"}})).default.version;
-		console.info(`Bafr v${ version }`);
+		console.info(`Brep v${ version }`);
 		return;
 	}
 
@@ -27,9 +27,9 @@ export default async function cli (script, options) {
 		throw new Error("Please provide a path to a script file as the first argument.");
 	}
 
-	let bafr = Bafr.fromPath(script, options);
+	let brep = Brep.fromPath(script, options);
 
-	let outcome = await bafr.glob();
+	let outcome = await brep.glob();
 
 	if (!outcome) {
 		return;
@@ -40,7 +40,7 @@ export default async function cli (script, options) {
 	let message = util.serializeOutcome(outcome);
 	outcome.totalTimeTaken = performance.now() - start;
 
-	if (!bafr.options.quiet) {
+	if (!brep.options.quiet) {
 		console.info(message, `(total time: ${ util.formatTimeTaken(outcome.totalTimeTaken) })`);
 	}
 

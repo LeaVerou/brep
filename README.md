@@ -1,25 +1,26 @@
-# BAtch Find & Replace
+# brep (Batch REPlace) [![npm](https://img.shields.io/npm/v/brep)](https://www.npmjs.com/package/brep)
 
-Ever written some complex find & replace operations in a text editor, and wished you could save them somewhere and re-run them in the future,
-either on the same file or other files?
-This is exactly what bafr (**BA**tch **F**ind & **R**eplace) does.
+_For versions < 0.0.8 see [bafr](https://www.npmjs.com/package/bafr)_
 
-You write a bafr script (see syntax below), and then you apply it from the command-line like:
+Ever written some complex find & replace operations in a text editor, `sed` or whatever, and wished you could save them somewhere and re-run them in the future?
+This is exactly what brep _(**B**atch **Rep**lace)_ does!
+
+You write a _brep script_ (see syntax below), and then you apply it from the command-line like:
 
 ```sh
-bafr myscript.bafr.toml src/**/*.html
+brep myscript.brep.toml src/**/*.html
 ```
 
-This will apply the script `myscript.bafr.toml` to all HTML files in the `src` folder and its subfolders.
+This will apply the script `myscript.brep.toml` to all HTML files in the `src` folder and its subfolders.
 You don’t need to specify the file paths multiple times if they don’t change, you can include them in your script as defaults (and still override them if needed).
 
 ## Installation
 
 You will need to have [Node.js](https://nodejs.org/) installed.
-Then, to install bafr, run:
+Then, to install brep, run:
 
 ```sh
-npm install -g bafr
+npm install -g brep
 ```
 
 ## Syntax
@@ -33,7 +34,7 @@ The docs below will show both TOML and YAML, and it’s up to you what you prefe
 
 #### Replacing text with different text
 
-The most basic bafr script is a single replacement consisting of
+The most basic brep script is a single replacement consisting of
 a single static `from` declaration and a single `to` replacement.
 
 As an example, here is how you can replace all instances of `<br>` with a line break character:
@@ -64,7 +65,7 @@ I do not recommend using YAML for multiline strings.
 #### Regular expressions
 
 Replacing fixed strings with other fixed strings is useful, but not very powerful.
-The real power of bafr comes from its ability to use regular expressions.
+The real power of brep comes from its ability to use regular expressions.
 For example, here is how you’d strip all `<blink>` tags:
 
 ```toml
@@ -78,7 +79,7 @@ from: <blink>([\S\s]+?)</blink>
 to: $1 # $1 will match the content of the tag
 ```
 
-bafr uses the [JS dialect for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)) with the following flags:
+brep uses the [JS dialect for regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) ([cheatsheet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet)) with the following flags:
 - `g` (global): Replace all occurrences, not just the first one
 - `m` (multiline): `^` and `$` match the start and end of lines, not of the whole file.
 - `s` (dotAll): `.` matches any character, including newlines. Use `[^\r\n]` to match any character _except_ newlines.
@@ -89,7 +90,7 @@ bafr uses the [JS dialect for regular expressions](https://developer.mozilla.org
 
 So far our script has only been specifying a single find & replace operation.
 That’s not very powerful.
-The real power of Bafr is that a single script can specify multiple find & replace operations,
+The real power of Brep is that a single script can specify multiple find & replace operations,
 executed in order, with each operating on the result of the previous one.
 We will refer to each of these as a _replacement_ in the rest of the docs.
 
@@ -153,14 +154,14 @@ If you specify a `to`, it will be applied _before_ the child replacements.
 ### Refer to the matched string
 
 You can always use `$&` to refer to the matched string (even when not in regexp mode).
-For example, to wrap every instance of "bafr" with an `<abbr>` tag you can do:
+For example, to wrap every instance of "brep" with an `<abbr>` tag you can do:
 
 ```toml
-from = "bafr"
+from = "brep"
 to = '<abbr title="BAtch Find & Replace">$&</abbr>'
 ```
 ```yaml
-from: bafr
+from: brep
 to: '<abbr title="BAtch Find & Replace">$&</abbr>'
 ```
 
@@ -171,7 +172,7 @@ To disable these special replacements, use `literal = true` / `literal: true`.
 
 While `$&` can be convenient, it’s also a little cryptic.
 To make it easier to append or prepend matches with a string,
-bafr also supports `before`, `after`, and `insert` properties.
+brep also supports `before`, `after`, and `insert` properties.
 
 For example, this will insert "Bar" before every instance of "Foo":
 
@@ -193,17 +194,17 @@ You can also combine these with `from` to add additional criteria.
 For example this script:
 
 ```toml
-from = "bafr"
+from = "brep"
 after = "using"
-to = "awesome bafr"
+to = "awesome brep"
 ```
 
-Will convert "I am using bafr" to "I am using awesome bafr".
+Will convert "I am using brep" to "I am using awesome brep".
 
 ## [from, to] shortcut syntax for many simple replacements
 
 There are many cases where you want to make many replacements, all with the same settings (specified on their parent) and just different `from`/`to` values.
-Bafr supports a shortcut for this.
+Brep supports a shortcut for this.
 
 Instead of declarations, you can specify from/to pairs directly by enclosing them in brackets, separated by a comma.
 This can be combined with regular replacements, though far more easily in YAML:
@@ -256,26 +257,26 @@ replace = [
 To use the files specified in the script, simply run:
 
 ```sh
-bafr script.bafr.toml
+brep script.brep.toml
 ```
 
-Where `script.bafr.toml` is your bafr script (and could be a `.yaml` or `.json` file).
+Where `script.brep.toml` is your brep script (and could be a `.yaml` or `.json` file).
 
 To override the files specified in the script, specify them after the script file name, like so:
 
 ```sh
-bafr script.bafr.toml src/*.md
+brep script.brep.toml src/*.md
 ```
 
 The syntax (TOML, YAML, JSON) is inferred from the file extension.
 To override that (or to use an arbitrary file extension) you can use `--format`:
 
 ```sh
-bafr script.bafr --format=toml
+brep script.brep --format=toml
 ```
 
 > [!NOTE]
-> You can name your script however you want, however ending in `.bafr.ext` is recommended (where ext is `toml`, `yaml`, `json`, etc.) to make it clear that this is a bafr script.
+> You can name your script however you want, however ending in `.brep.ext` is recommended (where ext is `toml`, `yaml`, `json`, etc.) to make it clear that this is a brep script.
 
 ### Supported flags
 
@@ -284,29 +285,29 @@ bafr script.bafr --format=toml
 
 ## JS API
 
-There are two classes: `Bafr` that has the most functionality but only works in Node,
+There are two classes: `Brep` that has the most functionality but only works in Node,
 and `Replacer` with the core functionality that works in both Node and the browser.
 
 ### `Replacer`
 
 ```js
-import { Replacer } from "bafr/replacer";
+import { Replacer } from "brep/replacer";
 ```
 
 Instance methods:
 - `replacer.transform(content)`: Process a string and return the result.
 
-### `Bafr` (Node.js-only)
+### `Brep` (Node.js-only)
 
 ```js
-import Bafr from "bafr";
+import Brep from "brep";
 ```
 
 Instance methods:
-- `bafr.text(content)`: Process a string (internally calls `replacer.transform()`).
-- `bafr.file(path [, outputPath])`: Process a file and write the results back (async).
-- `bafr.files(paths)`: Process multiple files and write the results back
-- `bafr.glob(pattern)`: Process multiple files and write the results back
+- `brep.text(content)`: Process a string (internally calls `replacer.transform()`).
+- `brep.file(path [, outputPath])`: Process a file and write the results back (async).
+- `brep.files(paths)`: Process multiple files and write the results back
+- `brep.glob(pattern)`: Process multiple files and write the results back
 
 ## Future plans
 
