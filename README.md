@@ -31,26 +31,12 @@ There are three main syntaxes, each more appropriate for different use cases:
 
 The docs below will show both TOML and YAML, and it’s up to you what you prefer.
 
-#### Stripping away matches
+#### Replacing text with different text
 
 The most basic bafr script is a single replacement consisting of
-a single `from` declaration.
-By default, when no `to` is specified, it defaults to the empty string, i.e. stripping away all matches.
-For example, this bafr script strips away all `<br>` tags:
+a single static `from` declaration and a single `to` replacement.
 
-```toml
-from = "<br>"
-```
-```yaml
-from: <br>
-```
-
-Note that the YAML syntax allows you to not quote strings in [many cases](https://stackoverflow.com/a/22235064/90826), which can be quite convenient.
-
-#### Replacing matches with a string
-
-In most cases you’d want to replace the instances found with something else.
-Here is how you can replace all `<br>` tags with a newline:
+As an example, here is how you can replace all instances of `<br>` with a line break character:
 
 ```toml
 from = "<br>"
@@ -60,6 +46,8 @@ to = "\n"
 from: <br>
 to: "\n"
 ```
+
+Note that the YAML syntax allows you to not quote strings in [many cases](https://stackoverflow.com/a/22235064/90826), which can be quite convenient.
 
 #### Multiline strings
 
@@ -146,6 +134,22 @@ replace:
 - { from: </blink>, to: "</span>" }
 ```
 
+### Nested replacements
+
+In some cases it’s more convenient to match a larger part of the text and then do more specific replacements inside just those matches.
+In a way, that is similar to a text editor’s "find in selection" feature, except on steroids.
+
+```yaml
+# Match sequences of JS comments
+from: "(^//[^\n\r]*$)+"
+to = "/*$&*/"
+replace:
+# Strip comment character
+- { from: "^//", to: "" }
+```
+
+If you specify a `to`, it will be applied _before_ the child replacements.
+
 ### Refer to the matched string
 
 You can always use `$&` to refer to the matched string (even when not in regexp mode).
@@ -229,7 +233,7 @@ replace = [
 | Key | Type | Default | Description |
 | --- | ---- | ------- | ----------- |
 | `from` | String | (Mandatory) | The string to search for. |
-| `to` | String | `""` | The string to replace the `from` string with. |
+| `to` | String | _(matched string)_ | The string to replace the `from` string with. |
 | `before` | String | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
 | `after` | String | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
 | `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |

@@ -71,7 +71,7 @@ export default class Replacer {
 		// if (this.parent?.parent) console.log(content);
 
 		let from = this[fromRegexp] ?? this.from;
-		let to = this.to ?? this.insert ?? "";
+		let to = this.to ?? this.insert;
 
 		if (from) {
 			let prevContent;
@@ -79,24 +79,27 @@ export default class Replacer {
 				prevContent = content;
 				if (from) {
 					let simpleTo = !this.literal && !this.replace;
-					content = content.replaceAll(from, simpleTo ? to : (...args) => {
-						let resolvedArgs = resolveReplacementArgs(args);
-						to = this.to ?? this.insert ?? "";
+					if (to !== undefined || this.replace) {
+						content = content.replaceAll(from, simpleTo ? to : (...args) => {
+							let resolvedArgs = resolveReplacementArgs(args);
+							to = this.to ?? this.insert ?? resolvedArgs.match;
 
-						if (!this.literal) {
-							// Replace special replacement patterns
-							to = emulateStringReplacement(resolvedArgs, to);
-						}
-
-						if (this.replace) {
-							// Child replacements
-							for (let replacement of this.replace) {
-								to = replacement.transform(to);
+							if (!this.literal && to !== undefined) {
+								// Replace special replacement patterns
+								to = emulateStringReplacement(resolvedArgs, to);
 							}
-						}
 
-						return to;
-					});
+							if (this.replace) {
+								// Child replacements
+								for (let replacement of this.replace) {
+									to = replacement.transform(to);
+								}
+							}
+
+							return to;
+						});
+					}
+
 				}
 			}
 			while (this.recursive && prevContent !== content && content);
