@@ -55,7 +55,7 @@ Lastly, JSON is very fragile and verbose, but has the best compatibility with ot
 [^robustness]: Opposite of error-proneness. How hard is it to make mistakes?
 This includes both syntax errors or writing syntax that behaves differently than what you expect.
 
-[^crlf]: This refers to support for strings that can spread across multiple lines in your bafr script.
+[^crlf]: This refers to support for strings that can spread across multiple lines in your brep script.
 You can always include line breaks by using `\n` to represent them.
 
 The docs below will show TOML and YAML, and it’s up to you what you prefer.
@@ -208,11 +208,11 @@ For example, to wrap every instance of "brep" with an `<abbr>` tag you can do:
 
 ```toml
 from = "brep"
-to = '<abbr title="BAtch Find & Replace">$&</abbr>'
+to = '<abbr title="Batch REPlace">$&</abbr>'
 ```
 ```yaml
 from: brep
-to: '<abbr title="BAtch Find & Replace">$&</abbr>'
+to: '<abbr title="Batch REPlace">$&</abbr>'
 ```
 
 Beyond `$&` there is [a bunch of other special replacements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement), all starting with a dollar sign (`$`).
