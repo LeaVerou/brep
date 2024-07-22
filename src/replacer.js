@@ -106,7 +106,7 @@ export default class Replacer {
 		}
 		else if (this.replace) {
 			for (let replacement of this.replace) {
-				content = replacement.transform(content);
+				content = replacement.transform(content, options);
 			}
 		}
 
