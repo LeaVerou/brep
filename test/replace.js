@@ -102,5 +102,21 @@ export default {
 			],
 			expect: "abc",
 		},
+		{
+			name: "from: []",
+			args: [
+				"foo",
+				{from: ["f", "o"], to: "a"},
+			],
+			expect: "aaa",
+		},
+		{
+			name: "from: [] + regexp",
+			args: [
+				"foo bar baz",
+				{from: [ "^.", "(?<=b)."], to: "i", regexp: true},
+			],
+			expect: "ioo bir biz",
+		}
 	]
 }

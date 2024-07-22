@@ -285,10 +285,10 @@ replace = [
 
 | Key | Type | Default | Description |
 | --- | ---- | ------- | ----------- |
-| `from` | String | (Mandatory) | The string to search for. |
+| `from` | String or array of strings | (Mandatory) | The string to search for. If an array of strings, they are considered alternatives. |
 | `to` | String | _(matched string)_ | The string to replace the `from` string with. |
-| `before` | String | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
-| `after` | String | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
+| `before` | String or array of strings | - | Match only strings before this one. Will be interpreted as a regular expression in regexp mode. |
+| `after` | String or array of strings | - | Match only strings after this one. Will be interpreted as a regular expression in regexp mode. |
 | `regexp` | Boolean | `false` | Whether the `from` field should be treated as a regular expression. |
 | `ignore_case` | Boolean | `false` | Set to `true` to make the search should case-insensitive. |
 | `whole_word` | Boolean | `false` | Match only matches either beginning/ending in non-word characters or preceded/followed by non-word characters. Unicode aware. |

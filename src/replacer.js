@@ -38,17 +38,17 @@ export default class Replacer {
 	 */
 	compile () {
 		let { from, before, after, regexp, ignore_case, whole_word } = this;
-		let createRegexp = regexp || before || after || ignore_case || whole_word;
+		let createRegexp = regexp || before || after || ignore_case || whole_word || Array.isArray(from);
 		let isReplacement = Boolean(from || before || after);
 
 		if (createRegexp && isReplacement) {
 			let flags = "gmvs" + (ignore_case ? "i" : "");
 			let pattern = [
-				after  ? `(?<=${ regexp ? after  : escapeRegExp(after) })`  : "",
+				after  ? partialRegexp(after, {regexp, group: "?<=" })  : "",
 				whole_word ? `(?:^|(?=${ nonword })|(?<=${ nonword }))` : "",
-				from   ?         regexp ? from   : escapeRegExp(from)       : "",
+				from   ? partialRegexp(from, {regexp, group: Array.isArray(from) }) : "",
 				whole_word ? `(?:$|(?=${ nonword })|(?<=${ nonword }))` : "",
-				before ?  `(?=${ regexp ? before : escapeRegExp(before) })` : "",
+				before ? partialRegexp(before, {regexp, group: "?="}) : "",
 			].join("");
 
 			if (pattern) {
@@ -116,4 +116,22 @@ export default class Replacer {
 
 function escapeRegExp(str) {
 	return str?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function partialRegexp (text, o = {}) {
+	let {regexp, group} = o;
+
+	if (Array.isArray(text)) {
+		text = text.map(t => partialRegexp(t, o)).join("|");
+	}
+	else if (!regexp) {
+		text = escapeRegExp(text);
+	}
+
+	if (group) {
+		let groupType = group === true ? "?:" : group;
+		text = `(${groupType}${text})`;
+	}
+
+	return text;
 }
