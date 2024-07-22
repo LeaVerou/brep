@@ -1,8 +1,8 @@
 import fs from "fs";
 import parse from "./parse.js";
-import {globby} from "globby";
+import {globby, convertPathToPattern} from "globby";
 import Replacer from "./replacer.js";
-import { applyDefaults } from "./util.js";
+import { applyDefaults, toArray } from "./util.js";
 import { resolvePath } from "./util-node.js";
 
 export default class Brep {
@@ -71,14 +71,14 @@ export default class Brep {
 	 * @param {string} inputPath
 	 * @returns {Promise<boolean>}
 	 */
-	async file (inputPath, outputPath = this.getOutputPath(inputPath)) {
+	async file (inputPath, outputPath = this.getOutputPath(inputPath), options) {
 		let originalContent = await fs.promises.readFile(inputPath, "utf-8");
 		let content = this.text(originalContent, {
 			filter: (replacement) => {
-				if (replacement !== this.script && replacement.files) {
+				if (replacement.files && replacement !== this.script) {
 					// Test path against files criteria
-					replacement.files = Array.isArray(replacement.files) ? replacement.files : [replacement.files];
-					return Boolean(replacement.files.find(file => inputPath.includes(file)));
+					replacement.filePatterns ??= toArray(replacement.files).map(p => convertPathToPattern(p));
+					return replacement.filePatterns.some(pattern => pattern.test(inputPath));
 				}
 
 				return true;

@@ -127,3 +127,7 @@ export function emulateStringReplacement (args, to) {
 		return m; // failsafe
 	});
 }
+
+export function toArray (val) {
+	return Array.isArray(val) ? val : [val];
+}
