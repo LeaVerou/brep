@@ -2,6 +2,8 @@
 
 _For versions < 0.0.8 see [bafr](https://www.npmjs.com/package/bafr)_
 
+[Online playground](https://projects.verou.me/brep/play/)
+
 Ever written some complex find & replace operations in a text editor, `sed` or whatever, and wished you could save them somewhere and re-run them in the future?
 This is exactly what brep _(**B**atch **Rep**lace)_ does!
 
