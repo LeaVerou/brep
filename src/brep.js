@@ -1,6 +1,6 @@
 import fs from "fs";
 import parse from "./parse.js";
-import {globby, convertPathToPattern} from "globby";
+import {globby} from "globby";
 import Replacer from "./replacer.js";
 import { applyDefaults, toArray } from "./util.js";
 import { resolvePath } from "./util-node.js";
@@ -77,8 +77,7 @@ export default class Brep {
 			filter: (replacement) => {
 				if (replacement.files && replacement !== this.script) {
 					// Test path against files criteria
-					replacement.filePatterns ??= toArray(replacement.files).map(p => convertPathToPattern(p));
-					return replacement.filePatterns.some(pattern => pattern.test(inputPath));
+					return toArray(replacement.files).some(file => inputPath.includes(file));
 				}
 
 				return true;
