@@ -92,7 +92,7 @@ export default class Replacer {
 							if (this.replace) {
 								// Child replacements
 								for (let replacement of this.replace) {
-									to = replacement.transform(to);
+									to = replacement.transform(to, options);
 								}
 							}
 
@@ -106,7 +106,7 @@ export default class Replacer {
 		}
 		else if (this.replace) {
 			for (let replacement of this.replace) {
-				content = replacement.transform(content);
+				content = replacement.transform(content, options);
 			}
 		}
 
