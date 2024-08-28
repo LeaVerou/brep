@@ -117,6 +117,25 @@ export default {
 				{from: [ "^.", "(?<=b)."], to: "i", regexp: true},
 			],
 			expect: "ioo bir biz",
-		}
+		},
+		{
+			name: "to: function",
+			tests: [
+				{
+					args: [
+						"foo",
+						{from: "o", to: () => "a"},
+					],
+					expect: "faa",
+				},
+				{
+					args: [
+						"foo",
+						{from: "o", to: (match) => match.toUpperCase()},
+					],
+					expect: "fOO",
+				},
+			],
+		},
 	]
 }
