@@ -83,20 +83,26 @@ export default class Replacer {
 						content = content.replaceAll(from, simpleTo ? to : (...args) => {
 							let resolvedArgs = resolveReplacementArgs(args);
 							to = this.to ?? this.insert ?? resolvedArgs.match;
+							let ret = resolvedArgs.match;
 
-							if (!this.literal && to !== undefined) {
-								// Replace special replacement patterns
-								to = emulateStringReplacement(resolvedArgs, to);
+							if (to !== undefined) {
+								if (typeof to === "function") {
+									ret = to.call(this, ...args);
+								}
+								else if (!this.literal) {
+									// Replace special replacement patterns
+									ret = emulateStringReplacement(resolvedArgs, to);
+								}
 							}
 
 							if (this.replace) {
 								// Child replacements
 								for (let replacement of this.replace) {
-									to = replacement.transform(to, options);
+									ret = replacement.transform(ret, options);
 								}
 							}
 
-							return to;
+							return ret;
 						});
 					}
 
