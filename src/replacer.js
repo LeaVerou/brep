@@ -87,7 +87,7 @@ export default class Replacer {
 
 							if (to !== undefined) {
 								if (typeof to === "function") {
-									ret = to.call(this, ...args);
+									ret = to.call(this, ret, resolvedArgs);
 								}
 								else {
 									// Replace special replacement patterns
