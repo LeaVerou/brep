@@ -82,16 +82,16 @@ export default class Replacer {
 					if (to !== undefined || this.replace) {
 						content = content.replaceAll(from, simpleTo ? to : (...args) => {
 							let resolvedArgs = resolveReplacementArgs(args);
-							to = this.to ?? this.insert ?? resolvedArgs.match;
-							let ret = resolvedArgs.match;
+							let ret = resolvedArgs.match; // no change if no to
+							to = this.to ?? this.insert;
 
 							if (to !== undefined) {
 								if (typeof to === "function") {
 									ret = to.call(this, ...args);
 								}
-								else if (!this.literal) {
+								else {
 									// Replace special replacement patterns
-									ret = emulateStringReplacement(resolvedArgs, to);
+									ret = this.literal ? to : emulateStringReplacement(resolvedArgs, to);
 								}
 							}
 
