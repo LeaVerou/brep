@@ -78,7 +78,7 @@ export default class Replacer {
 			do {
 				prevContent = content;
 				if (from) {
-					let simpleTo = !this.literal && !this.replace;
+					let simpleTo = typeof to !== "function" && !this.literal && !this.replace;
 					if (to !== undefined || this.replace) {
 						content = content.replaceAll(from, simpleTo ? to : (...args) => {
 							let resolvedArgs = resolveReplacementArgs(args);
@@ -105,7 +105,6 @@ export default class Replacer {
 							return ret;
 						});
 					}
-
 				}
 			}
 			while (this.recursive && prevContent !== content && content);
