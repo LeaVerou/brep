@@ -27,8 +27,7 @@ export default async function cli (script, options) {
 		throw new Error("Please provide a path to a script file as the first argument.");
 	}
 
-	let brep = Brep.fromPath(script, options);
-
+	let brep = await Brep.fromPath(script, options);
 	let outcome = await brep.glob();
 
 	if (!outcome) {
